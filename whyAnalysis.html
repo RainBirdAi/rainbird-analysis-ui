@@ -3,19 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Rainbird - Why Analysis</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/d3/d3.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="whyAnalysis.css">
+    <link rel="stylesheet" href="fonts/sinkinsans_300light_macroman/stylesheet.css">
+    <link rel="shortcut icon" href="https://app.rainbird.ai/img/favicon.ico"/>
 </head>
 <body>
+    <div class="header">
+        <header></header>
+        <img src="images/rainbirdLogoPaddedNoWords.png" width="50" height="50" style="top: 9px; right: 11px; position: absolute;">
+    </div>
+    <div>
+        <input id="factID" value="WA:RF:8187e4e2f97a281460d9f3204cc26e7b">
+        <button id="go">GO</button>
+    </div>
     <div class="explorer">
-        <p>Explorer</p>
     </div>
-    <div id="columnHolder">
-
-    </div>
+    <svg id="columnHolder">
+        <g></g>
+    </svg>
 </body>
 </html>
-
+<script src="bezier.js"></script>
+<script src="layout.js"></script>
 <script src="whyAnalysis.js"></script>

@@ -1,0 +1,25 @@
+{
+  "name": "rainbird-analysis-ui",
+  "version": "0.0.2",
+  "homepage": "https://github.com/RainBirdAi/rainbird-analysis-ui",
+  "authors": [
+    "follow@rainbird.ai"
+  ],
+  "description": "",
+  "main": "whyAnalysis.js",
+  "moduleType": [
+    "globals"
+  ],
+  "dependencies": {
+    "d3": "3.0.x",
+    "jquery": "1.12.x"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
