@@ -38,7 +38,7 @@ var radius = 5;
 
 var conceptInstances = [];
 
-d3.select('#go').on('click', start);
+//d3.select('#go').on('click', start);
 
 function start() {
 
@@ -46,13 +46,18 @@ function start() {
         .datum({x:0, y:0})
         .call(pan);
 
-    getFact(d3.select('#factID').property('value'), function(fact) {
+    var firstFactID = window.location.href.split('?')[1];
+    console.log(firstFactID);
+    //getFact(d3.select('#factID').property('value'), function(fact) {
+    getFact(firstFactID, function(fact) {
         d3.select('div')
             .select('header')
             .text(fact.fact.subject.value + ' ' + fact.fact.relationship.type + ' ' + fact.fact.object.value);
 
         addNode(fact, 0);
     });
+
+    console.log(window.location.href);
 }
 
 function getConceptInstance(conceptInstance) {
@@ -200,7 +205,8 @@ function addNode(node, depth, parent) {
         nodeHolder.append('path')
             .attr('class', 'overPath');
         nodeHolder.append('text')
-            .attr('class', 'pathText');
+            .attr('class', 'pathText')
+            .style('fill', 'rgba(0,0,0,0.6)');
     }
 
     if (node.rule) {
@@ -231,16 +237,20 @@ function addRuleBlock(node, nodeHolder, depth) {
     ruleBlock.append('rect')
         .style('fill', 'white');
 
+    console.log('condition length ', node.rule.conditions, node);
     node.rule.conditions.forEach(function(condition, i) {
-        if (!condition.factID) //TODO remove this when analysis is fixed
+        if (!condition.factID && !condition.expression) //TODO remove this when analysis is fixed
             return;
-
+        var rowHolder = ruleBlock.append('g')
+            .attr('id', 'ruleText');
         if (condition.expression) {
-            ruleBlock.append('g')
-                .text(condition.expression.text + condition.expression.value);
+            rowHolder
+                .append('rect')
+                .attr('class', getColor(node.factID));
+            rowHolder
+                .append('text')
+                .text(condition.expression.text);
         } else {
-            var rowHolder = ruleBlock.append('g')
-                .attr('id', 'ruleText');
             rowHolder
                 .append('rect')
                 .attr('class', getColor(node.factID));
@@ -279,7 +289,13 @@ function getReadableRuleText(node, condition) {
     /*return (condition.subject === '%*' ? node.rule.bindings['S'] : node.rule.bindings[condition.subject]) + ' ' +
         condition.relationship + ' ' +
         (condition.object === '%*' ? node.rule.bindings['O'] : node.rule.bindings[condition.object]);*/
-    return condition.subject + ' ' + condition.relationship + ' ' + condition.object;
+    if (condition.expression) {
+        var retString = condition.expression.text;
+
+        return
+    } else {
+        return condition.subject + ' ' + condition.relationship + ' ' + condition.object;
+    }
 }
 
 function getRBLangRuleText(condition) {
@@ -332,3 +348,5 @@ function getResults(resultsID, callback) {
         }
     });
 }
+
+start();

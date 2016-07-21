@@ -155,13 +155,14 @@ function recalculate() {
             var curve = new Bezier(path.width + 16, startYOffset, path.width + 50, startYOffset, path.parent.x - 50 - path.x,
                 targetY, path.parent.x - path.x, targetY);
 
-            //draw top curve
-            console.log(curve.points);
+            //draw bottom curve
             var endWidth = getSalienceWidth(path, false);
             var leftCurve = function(c, i) { drawCurve(c, i+1, _this, true); };
-            var outline = curve.outline(getCertaintyWidth(path, false),1,endWidth,endWidth);
+            var outline = curve.outline(getCertaintyWidth(path, false),10,endWidth,endWidth);
             outline.curves.forEach(function(curve, index) {
-                leftCurve(curve, index)
+                //console.log('this', index, curve);
+                if (curve.points[0].x !== curve.points[1].x)
+                    leftCurve(curve, index)
             });
             drawCenterCurve(curve, 1, _this);
         });
@@ -171,7 +172,7 @@ function recalculate() {
             var _this = d3.select(this);
             _this.attr('d', '');
 
-            var targetY = path.parent.y - path.y + path.targetIndex * 22 + endYOffset;
+            var targetY = path.parent.y - path.y + path.targetIndex * ruleGap + endYOffset;
 
             var curve = new Bezier(
                 path.width + 16, startYOffset,
@@ -190,21 +191,29 @@ function recalculate() {
             var rightCurve = function(c, i) { drawCurve(c, i+1, _this, false); };
             var outline = curve.outline(10,getCertaintyWidth(path, true),endWidth,endWidth);
             outline.curves.forEach(function(curve, index) {
-                rightCurve(curve, index)
+                //if (curve.points[0].x !== curve.points[1].x)
+                    rightCurve(curve, index)
             });
             drawCenterCurve(curveInverted, 1, _this);
+        })
+        .style('fill', function(d) {
+            return d.fact.certainty === 100 ? 'transparent' : 'rgba(0,0,0.6)';
         });
 
     d3.selectAll('.pathText')
         .attr('x', function(node) {
-            return (node.parent.x - node.x)/2 + 100;
+            return (node.parent.x - node.x)/2 + 130;
         })
         .attr('y', function(node) {
-            return (node.parent.y - node.y)/2 + 85;
+            //return (node.parent.y - node.y)/2 + 85;
+            return 50;
         })
         .text(function(d) {
             return 'Certainty ' + d.fact.certainty + '%';
-        });
+        })
+        .style('fill', function(d) {
+            return d.fact.certainty === 100 ? 'transparent' : 'rgba(0,0,0,0.6)';
+        })
 }
 
 
@@ -223,6 +232,19 @@ function drawCurve(curve, index, pathIn, leftSide) {
     var p = curve.points;
     var currentPath = path.attr('d');
 
+    var maxIndex = 0;
+    var minIndex = 10;
+    for (var i = 0; i < p.length-1; i++) {
+        if (p[i].x === p[i+1].x) {
+            console.log('found vert', index, p);
+            if (minIndex > index)
+                minIndex = index;
+            if (maxIndex < index)
+                maxIndex = index;
+        }
+    }
+
+    //console.log(minIndex, maxIndex)
     if ((leftSide && index < 5 && index > 0) || (!leftSide && index > 5)) {  //cull to left side of curve. Need to expand out to right side
         if (p.length === 3) {
             path.attr('d', function () {
@@ -291,6 +313,7 @@ function updateColumnYPosition(depth) {
         node.x = xPos;
         yPos += node.height + 50;
     });
+    recalculate();
 }
 
 function getColumnX(depth) {
