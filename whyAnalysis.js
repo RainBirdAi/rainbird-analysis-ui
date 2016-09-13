@@ -1,5 +1,4 @@
-var yolandaUrl = 'http://localhost:3100'; //'https://api.rainbird.ai';
-
+var yolandaUrl = window.location.href.split('?api=')[1];
 var columns = [];
 
 var drag = d3.behavior.drag()
@@ -46,7 +45,7 @@ function start() {
         .datum({x:0, y:0})
         .call(pan);
 
-    var firstFactID = window.location.href.split('?')[1];
+    var firstFactID = window.location.href.split('?id=')[1];
     console.log(firstFactID);
     //getFact(d3.select('#factID').property('value'), function(fact) {
     getFact(firstFactID, function(fact) {
