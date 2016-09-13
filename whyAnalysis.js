@@ -128,14 +128,15 @@ function addNode(node, depth, parent) {
         .classed('headerHolder', true);
     headerHolder
         .append('text')
-        .attr('y', 15)
+        .attr('y', 30)
         .text(node.fact.subject.value + ' ' +
             node.fact.relationship.type + ' ' +
             node.fact.object.value + ' '
             + node.fact.certainty + '%');
     headerHolder
         .append('text')
-        .attr('y', 30)
+        .attr('y', 10)
+        .classed('header bold', true)
         .text(getSource(node.source));
     headerHolder
         .append('text')

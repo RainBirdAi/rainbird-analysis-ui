@@ -89,6 +89,10 @@ svg {
     height: 70px;
 }
 
+.bold {
+    font-family: 'sinkin_sans500_medium';
+}
+
 .underPath {
     fill: black;
 }

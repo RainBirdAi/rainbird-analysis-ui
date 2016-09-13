@@ -1,0 +1,67 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'install' ]
+2 info using npm@3.9.5
+3 info using node@v5.0.0
+4 verbose config Skipping project config: /Users/lawrie/.npmrc. (matches userconfig)
+5 silly loadCurrentTree Starting
+6 silly install loadCurrentTree
+7 silly install readLocalPackageData
+8 silly install normalizeTree
+9 silly loadCurrentTree Finishing
+10 silly loadIdealTree Starting
+11 silly install loadIdealTree
+12 silly cloneCurrentTree Starting
+13 silly install cloneCurrentTreeToIdealTree
+14 silly cloneCurrentTree Finishing
+15 silly loadShrinkwrap Starting
+16 silly install loadShrinkwrap
+17 silly loadShrinkwrap Finishing
+18 silly loadAllDepsIntoIdealTree Starting
+19 silly install loadAllDepsIntoIdealTree
+20 silly loadAllDepsIntoIdealTree Finishing
+21 silly idealTree:prePrune lawrie
+22 silly loadIdealTree Finishing
+23 silly currentTree lawrie
+24 silly idealTree lawrie
+25 silly generateActionsToTake Starting
+26 silly install generateActionsToTake
+27 silly generateActionsToTake Finishing
+28 silly diffTrees action count 0
+29 silly decomposeActions action count 0
+30 silly executeActions Starting
+31 silly install executeActions
+32 silly doSerial global-install 0
+33 silly doParallel fetch 0
+34 verbose correctMkdir /Users/lawrie/.npm/_locks correctMkdir not in flight; initializing
+35 verbose lock using /Users/lawrie/.npm/_locks/staging-c85eeb993502ca1f.lock for /Users/lawrie/node_modules/.staging
+36 verbose unlock done using /Users/lawrie/.npm/_locks/staging-c85eeb993502ca1f.lock for /Users/lawrie/node_modules/.staging
+37 silly rollbackFailedOptional Starting
+38 silly rollbackFailedOptional Finishing
+39 silly runTopLevelLifecycles Starting
+40 silly runTopLevelLifecycles Finishing
+41 silly install printInstalled
+42 warn enoent ENOENT: no such file or directory, open '/Users/lawrie/package.json'
+43 warn lawrie No description
+44 warn lawrie No repository field.
+45 warn lawrie No README data
+46 warn lawrie No license field.
+47 verbose stack Error: EACCES: permission denied, mkdir '/Users/lawrie/node_modules/.staging'
+47 verbose stack     at Error (native)
+48 verbose cwd /Users/lawrie/Desktop/Develop/rainbird-analysis-ui
+49 error Darwin 15.4.0
+50 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install"
+51 error node v5.0.0
+52 error npm  v3.9.5
+53 error path /Users/lawrie/node_modules/.staging
+54 error code EACCES
+55 error errno -13
+56 error syscall mkdir
+57 error Error: EACCES: permission denied, mkdir '/Users/lawrie/node_modules/.staging'
+57 error     at Error (native)
+57 error  { [Error: EACCES: permission denied, mkdir '/Users/lawrie/node_modules/.staging']
+57 error   errno: -13,
+57 error   code: 'EACCES',
+57 error   syscall: 'mkdir',
+57 error   path: '/Users/lawrie/node_modules/.staging' }
+58 error Please try running this command again as root/Administrator.
+59 verbose exit [ -13, true ]
