@@ -37,8 +37,6 @@ var radius = 5;
 
 var conceptInstances = [];
 
-//d3.select('#go').on('click', start);
-
 function start() {
 
     d3.select('svg')
@@ -46,8 +44,7 @@ function start() {
         .call(pan);
 
     var firstFactID = window.location.href.split('?id=')[1];
-    console.log(firstFactID);
-    //getFact(d3.select('#factID').property('value'), function(fact) {
+
     getFact(firstFactID, function(fact) {
         d3.select('div')
             .select('header')
@@ -55,8 +52,6 @@ function start() {
 
         addNode(fact, 0);
     });
-
-    console.log(window.location.href);
 }
 
 function getConceptInstance(conceptInstance) {
@@ -69,7 +64,9 @@ function getConceptInstance(conceptInstance) {
     return null;
 }
 
-function addNode(node, depth, parent) {
+function addNode(node, depth, parent, collapse) {
+    node.depth = depth;
+    node.children = [];
     addToColumn(node, depth);
     if (!getConceptInstance(node.fact.subject)) {
         node.fact.subject.selected = false;
@@ -90,6 +87,7 @@ function addNode(node, depth, parent) {
     nodeHolder.datum(function() {
         if (parent) {
             node.parent = parent;
+            parent.children.push(node);
         }
         return node;
     });
@@ -98,7 +96,9 @@ function addNode(node, depth, parent) {
                 return 'translate(' + d.x + ',' + d.y + ')'
             });
 
-    nodeHolder.call(drag);
+
+
+    //nodeHolder.call(drag);
 
     nodeHolder
         .append('rect')
@@ -120,21 +120,18 @@ function addNode(node, depth, parent) {
             color = 'yellow';
             break;
     }
-    nodeHolder.attr('class', '.nodeHolder ' + color);
+    nodeHolder.attr('class', 'nodeHolder ' + color);
 
     var headerHolder = nodeHolder
         .append('g')
         .classed('headerHolder', true);
     headerHolder
         .append('text')
-        .attr('y', 15)
-        .text(node.fact.subject.value + ' ' +
-            node.fact.relationship.type + ' ' +
-            node.fact.object.value + ' '
-            + node.fact.certainty + '%');
+        .attr('y', 30)
+        .text(node.fact.certainty + '% certain');
     headerHolder
         .append('text')
-        .attr('y', 30)
+        .attr('y', 15)
         .text(getSource(node.source));
     headerHolder
         .append('text')
@@ -212,11 +209,36 @@ function addNode(node, depth, parent) {
         addRuleBlock(node, nodeHolder, depth);
     }
 
+    node.removeThis = function() {
+        collapse();
+        removeFromColumn(node, node.depth);
+        node.children.forEach(function(child) {
+            child.removeThis();
+        });
+        nodeHolder[0][0].remove();
+    };
+
+    nodeHolder
+        .append('text')
+        .attr('id', 'icon')
+        .text('\uf00d')
+        .style('font-family', 'FontAwesome')  //todo move to css
+        .style('fill', 'black')
+        .on('click', function(a,b,c) {
+            node.removeThis();
+        });
+
     layoutNode(node, nodeHolder);
     updateColumnYPosition(depth);
     nodeHolder.attr('transform', function(d) {
         return 'translate(' + d.x + ',' + d.y + ')';
-    })
+    });
+
+    nodeHolder
+        .style('opacity', 0)
+        .transition()
+        .duration(1000)
+        .style('opacity', 1);
 }
 
 function style(d) {
@@ -233,10 +255,15 @@ function addRuleBlock(node, nodeHolder, depth) {
         .attr('id', 'ruleBlock')
         .classed('ruleHolder', true);
 
+    ruleBlock.append('text')
+        .attr('y', -13)
+        .attr('x', 0)
+        .text('Conditions')
+        .style('fill', 'white');
+
     ruleBlock.append('rect')
         .style('fill', 'white');
 
-    console.log('condition length ', node.rule.conditions, node);
     node.rule.conditions.forEach(function(condition, i) {
         if (!condition.factID && !condition.expression) //TODO remove this when analysis is fixed
             return;
@@ -248,7 +275,7 @@ function addRuleBlock(node, nodeHolder, depth) {
                 .attr('class', getColor(node.factID));
             rowHolder
                 .append('text')
-                .text(condition.expression.text);
+                .text(getReadableRuleText(node, condition));
         } else {
             rowHolder
                 .append('rect')
@@ -264,6 +291,9 @@ function addRuleBlock(node, nodeHolder, depth) {
                 d3.select(this).text(getReadableRuleText(node, condition));
             });
             var expanded = false;
+            var collapse = function() {
+                expanded = false;
+            };
             rowHolder.on('click', function() {
                 if (!expanded) {
                     getFact(condition.factID, function(fact) {
@@ -272,9 +302,9 @@ function addRuleBlock(node, nodeHolder, depth) {
                         }
                         else if (!expanded) {
                             expanded = true;
-                            fact.targetIndex = ++i;
+                            fact.targetIndex = i;
                             fact.targetSalience = condition.salience ? condition.salience : 100;
-                            addNode(fact, depth + 1, node);
+                            addNode(fact, depth + 1, node, collapse);
                             recalculate();
                         }
                     });
@@ -285,13 +315,20 @@ function addRuleBlock(node, nodeHolder, depth) {
 }
 
 function getReadableRuleText(node, condition) {
-    /*return (condition.subject === '%*' ? node.rule.bindings['S'] : node.rule.bindings[condition.subject]) + ' ' +
-        condition.relationship + ' ' +
-        (condition.object === '%*' ? node.rule.bindings['O'] : node.rule.bindings[condition.object]);*/
     if (condition.expression) {
-        var retString = condition.expression.text;
+        var retString = '';
+        var stringArray = condition.expression.text.split(' ');
+        stringArray.forEach(function(subString) {
+            if (subString.indexOf('%') === 0) {
+                subString = subString.substring(1);
+                if (node.rule.bindings[subString]) {
+                    subString = node.rule.bindings[subString];
+                }
 
-        return
+            }
+            retString += subString + ' ';
+        });
+        return retString;
     } else {
         return condition.subject + ' ' + condition.relationship + ' ' + condition.object;
     }
