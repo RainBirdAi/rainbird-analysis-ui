@@ -328,7 +328,9 @@ function updateColumnYPosition(depth) {
     });
     columns[depth].width = widestNode;
     var xPos = getColumnX(depth);
+    console.log('yyy array order');
     columns[depth].forEach(function (node) {
+        console.log('yyy', node.targetIndex);
         node.y = yPos;
         node.x = xPos;
         yPos += node.height + 50;

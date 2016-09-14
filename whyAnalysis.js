@@ -224,7 +224,7 @@ function addNode(node, depth, parent, collapse) {
         .text('\uf00d')
         .style('font-family', 'FontAwesome')  //todo move to css
         .style('fill', 'black')
-        .on('click', function(a,b,c) {
+        .on('click', function() {
             node.removeThis();
         });
 
@@ -324,7 +324,6 @@ function getReadableRuleText(node, condition) {
                 if (node.rule.bindings[subString]) {
                     subString = node.rule.bindings[subString];
                 }
-
             }
             retString += subString + ' ';
         });
