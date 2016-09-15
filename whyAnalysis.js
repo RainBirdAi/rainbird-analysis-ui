@@ -1,5 +1,6 @@
 var yolandaUrl = window.location.href.split('?api=')[1];
 var columns = [];
+var storage = localStorage;
 
 var drag = d3.behavior.drag()
     .on("drag", function(d,i) {
@@ -40,16 +41,12 @@ var conceptInstances = [];
 function start() {
 
     d3.select('svg')
-        .datum({x:0, y:0})
+        .datum({x:-100, y:-100})
         .call(pan);
 
     var firstFactID = window.location.href.split('?id=')[1];
 
     getFact(firstFactID, function(fact) {
-        d3.select('div')
-            .select('header')
-            .text(fact.fact.subject.value + ' ' + fact.fact.relationship.type + ' ' + fact.fact.object.value);
-
         addNode(fact, 0);
     });
 }
@@ -95,10 +92,6 @@ function addNode(node, depth, parent, collapse) {
         .attr('transform', function(d) {
                 return 'translate(' + d.x + ',' + d.y + ')'
             });
-
-
-
-    //nodeHolder.call(drag);
 
     nodeHolder
         .append('rect')
@@ -385,3 +378,71 @@ function getResults(resultsID, callback) {
 }
 
 start();
+
+function showTips()
+{
+    function dismiss() {
+        swal({
+            title: "Show tips on start up?",
+            text: "",
+            imageSize: "300x300",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (isConfirm) {
+                storage.RBDontShowIntro = false;
+            } else {
+                storage.RBDontShowIntro = true;
+                swal("Got it!", "If you need a reminder just click the question mark");
+            }
+        });
+    }
+
+    swal(
+        {
+            title: "Click and drag to pan",
+            text: "",
+            imageUrl: "images/whyAnalysisAnimation1.gif",
+            imageSize: "300x300",
+            showCancelButton: true,
+            confirmButtonText: "Tell me more",
+            cancelButtonText: "Dismiss",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (isConfirm) {
+                swal({
+                    title: "Expand and collapse facts",
+                    text: "",
+                    imageUrl: "images/whyAnalysisAnimation2.gif",
+                    imageSize: "300x300",
+                    confirmButtonText: "Tell me more",
+                    cancelButtonText: "Dismiss",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        swal({
+                            title: "Knowledge Map triples",
+                            text: "Display as fact cards",
+                            imageUrl: "images/whyAnalysisFact.png",
+                            imageSize: "300x300",
+                            confirmButtonText: "Ok",
+                        });
+                    } else {
+                        dismiss();
+                    }
+                });
+            } else {
+                dismiss();
+            }
+        });
+}
+
+if(!storage.RBDontShowIntro || storage.RBDontShowIntro == 'false') {
+    showTips();
+}
