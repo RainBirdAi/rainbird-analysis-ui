@@ -4,6 +4,7 @@
 
 function layoutNode(node, nodeHolder) {
     var nodeWidth = 200;
+    var ruleBlockStart = 110;
     var subWidth = getWidestLength(nodeHolder.select('.subjectHolder'))+8;
     var relWidth = getWidestLength(nodeHolder.select('.relationshipHolder'))+8;
     var objWidth = getWidestLength(nodeHolder.select('.objectHolder'))+8;
@@ -27,7 +28,7 @@ function layoutNode(node, nodeHolder) {
     var subPos = tripleNodeWidthDifference/2;
     var relPos = subPos + subWidth + 4;
     var objPos = relPos + relWidth + 4;
-    var nodeHeight = (node.rule ? node.rule.conditions.length * 25 + 94 : 84);
+    var nodeHeight = (node.rule ? node.rule.conditions.length * 25 + ruleBlockStart + 6 : 84);
     node.height = nodeHeight;
 
     nodeHolder.select('rect')
@@ -94,9 +95,9 @@ function layoutNode(node, nodeHolder) {
 
     //Position rule block
     nodeHolder.select('#ruleBlock')
-        .attr('transform', 'translate(8, 88)')
+        .attr('transform', 'translate(8, '+ruleBlockStart+')')
         .select('rect')
-        .attr('height', nodeHeight - 86)
+        .attr('height', nodeHeight - ruleBlockStart+1)
         .attr('width', nodeWidth + 8)
         .attr('x', '-4')
         .attr('y', '-6')
@@ -108,6 +109,7 @@ function layoutNode(node, nodeHolder) {
         .attr('height', 20)
         .attr('rx', 5);
     nodeHolder.select('#ruleBlock')
+        .selectAll('#ruleText')
         .selectAll('text')
         .attr('y', 16)
         .attr('x', 5);
@@ -115,7 +117,13 @@ function layoutNode(node, nodeHolder) {
         .selectAll('#ruleText')
         .attr('transform', function(d, i) {
             return 'translate(0, ' + i * 25 + ')';
-        })
+        });
+
+    nodeHolder.select('#icon')
+        .attr('x', nodeWidth-5)
+        .attr('y', 20)
+        .style('font-size', '1.5em')
+        .style('fill', 'white');
 }
 
 function getWidestLength(node) {
@@ -132,10 +140,11 @@ function getWidestLength(node) {
 
 function recalculate() {
     var startYOffset = 43;
-    var endYOffset = 65;
+    var endYOffset = 114;
     var startTotalWidth = 32;
-    var endTotalWidth = 18;
-    var ruleGap = 26;
+    var endTotalWidth = 12;
+    var ruleGap = 25;
+    var xOffset = 8;
     var getCertaintyWidth = function(node, inverted) {
         var percentage = node.fact.certainty / 100;
         return  inverted ? (1-percentage) * startTotalWidth : percentage * startTotalWidth;
@@ -152,15 +161,14 @@ function recalculate() {
 
             var targetY = path.parent.y - path.y + path.targetIndex * ruleGap + endYOffset;
 
-            var curve = new Bezier(path.width + 16, startYOffset, path.width + 50, startYOffset, path.parent.x - 50 - path.x,
-                targetY, path.parent.x - path.x, targetY);
+            var curve = new Bezier(path.width + 16, startYOffset, path.width + 50, startYOffset, path.parent.x - 50 - path.x + xOffset,
+                targetY, path.parent.x - path.x + xOffset, targetY);
 
             //draw bottom curve
             var endWidth = getSalienceWidth(path, false);
             var leftCurve = function(c, i) { drawCurve(c, i+1, _this, true); };
             var outline = curve.outline(getCertaintyWidth(path, false),10,endWidth,endWidth);
             outline.curves.forEach(function(curve, index) {
-                //console.log('this', index, curve);
                 if (curve.points[0].x !== curve.points[1].x)
                     leftCurve(curve, index)
             });
@@ -197,7 +205,7 @@ function recalculate() {
             drawCenterCurve(curveInverted, 1, _this);
         })
         .style('fill', function(d) {
-            return d.fact.certainty === 100 ? 'transparent' : 'rgba(0,0,0.6)';
+            return d.fact.certainty === 100 ? 'transparent' : 'rgba(0,0,0,0.6)';
         });
 
     d3.selectAll('.pathText')
@@ -236,7 +244,6 @@ function drawCurve(curve, index, pathIn, leftSide) {
     var minIndex = 10;
     for (var i = 0; i < p.length-1; i++) {
         if (p[i].x === p[i+1].x) {
-            console.log('found vert', index, p);
             if (minIndex > index)
                 minIndex = index;
             if (maxIndex < index)
@@ -244,7 +251,6 @@ function drawCurve(curve, index, pathIn, leftSide) {
         }
     }
 
-    //console.log(minIndex, maxIndex)
     if ((leftSide && index < 5 && index > 0) || (!leftSide && index > 5)) {  //cull to left side of curve. Need to expand out to right side
         if (p.length === 3) {
             path.attr('d', function () {
@@ -263,7 +269,7 @@ function drawCurve(curve, index, pathIn, leftSide) {
         }
     }
     path
-        .style('fill', leftSide ? 'rgba(255,100,100,0.5)' : 'rgba(0,0,0,0.5)');
+        .style('fill', leftSide ? 'rgba(255, 100, 100, 0.51)' : 'rgba(0,0,0,0.5)');
 }
 
 function drawCenterCurve(curve, index, pathIn) {
@@ -295,7 +301,21 @@ function addToColumn(node, depth) {
     if (columns.length <= depth) {
         columns.push([]);
     }
-    columns[depth].splice(node.targetIndex, 0, node);
+    var insertPosition = 0;
+    columns[depth].forEach(function(otherNode) {
+        if (node.targetIndex > otherNode.targetIndex) {
+            insertPosition++;
+        }
+    });
+    columns[depth].splice(insertPosition, 0, node);
+}
+
+function removeFromColumn(node, depth) {
+    var indexOf = columns[depth].indexOf(node);
+    if (indexOf !== -1) {
+        columns[depth].splice(indexOf, 1);
+    }
+    updateColumnYPosition(depth);
 }
 
 function updateColumnYPosition(depth) {
@@ -314,6 +334,11 @@ function updateColumnYPosition(depth) {
         yPos += node.height + 50;
     });
     recalculate();
+    updateNodePositions();
+}
+
+function updateNodePositions() {
+    d3.selectAll('.nodeHolder').transition().duration(500).attr('transform', function(d) { return 'translate(' +d.x + ',' + d.y +')' }).style('opacity', 1);
 }
 
 function getColumnX(depth) {
@@ -361,13 +386,13 @@ function getColor(id) {
 function getSource(source) {
     switch (source) {
         case 'km':
-            return 'Knowledge Map';
+            return 'Fact stored in Knowledge Map';
         case 'answer':
-            return 'Ask';
+            return 'Fact answered by user';
         case 'rule':
-            return 'Rule';
+            return 'Fact derived from rule';
         case 'datasource':
-            return 'Data-source';
+            return 'Fact retrived from data-source';
         default:
             return 'break';
     }
