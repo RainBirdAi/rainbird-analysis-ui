@@ -48,14 +48,14 @@ function layoutNode(node, nodeHolder) {
         .attr('width', nodeWidth + 8)
         .attr('height', 40)
         .attr('y', -15)
-        .attr('rx', 5);
+        .attr('rx', 0);
     nodeHolder.select('.rowHolder')
         .selectAll('.holder')
         .select('rect')
         .attr('width', nodeWidth/3 - 4)
         .attr('height', 32)
         .attr('y', -11)
-        .attr('rx', 5);
+        .attr('rx', 0);
 
     //position triple rectangles
     nodeHolder.select('.rowHolder')
@@ -102,13 +102,13 @@ function layoutNode(node, nodeHolder) {
         .attr('width', nodeWidth + 8)
         .attr('x', '-4')
         .attr('y', '-6')
-        .attr('rx', 5);
+        .attr('rx', 0);
     nodeHolder.select('#ruleBlock')
         .selectAll('#ruleText')
         .select('rect')
         .attr('width', nodeWidth)
         .attr('height', 20)
-        .attr('rx', 5);
+        .attr('rx', 0);
     nodeHolder.select('#ruleBlock')
         .selectAll('#ruleText')
         .selectAll('text')
@@ -140,105 +140,39 @@ function getWidestLength(node) {
 }
 
 function recalculate() {
-    var startYOffset = 43;
-    var endYOffset = 114;
-    var startTotalWidth = 32;
-    var endTotalWidth = 12;
+    function cutString(string) {
+        return string.substring(string.indexOf(',')+1, string.indexOf(')'));
+    }
+
+    var startYOffset = 59;
+    var endYOffset = 120;
     var ruleGap = 25;
-    var xOffset = 8;
-    var getCertaintyWidth = function(node, inverted) {
-        var percentage = node.fact.certainty / 100;
-        return  inverted ? (1-percentage) * startTotalWidth : percentage * startTotalWidth;
-    };
-    var getSalienceWidth = function(node, inverted) {
-        var percentage = node.targetSalience / 100;
-        return  inverted ? (1-percentage) * endTotalWidth : percentage * endTotalWidth;
-    };
-
-    d3.selectAll('.underPath')
-        .each(function(path) {
-            var _this = d3.select(this);
-            _this.attr('d', '');
-
-            var targetY = path.parent.y - path.y + path.targetIndex * ruleGap + endYOffset;
-            var startY = startYOffset - (!!~path.factID.indexOf('WA:XX') ? +7 : 0);
-
-            var curve = new Bezier(
-                path.width + 16, startY,
-                path.width + 50, startY,
-                path.parent.x - 50 - path.x + xOffset, targetY,
-                path.parent.x - path.x + xOffset, targetY);
-
-            //draw bottom curve
-            var endWidth = getSalienceWidth(path, false);
-            var leftCurve = function(c, i) { drawCurve(c, i+1, _this, true); };
-            var outline = curve.outline(getCertaintyWidth(path, false),10,endWidth,endWidth);
-            outline.curves.forEach(function(curve, index) {
-                if (curve.points[0].x !== curve.points[1].x)
-                    leftCurve(curve, index)
-            });
-            drawCenterCurve(curve, 1, _this);
-        })
-        .style('fill', function(d) {
-            return !!~d.factID.indexOf('WA:XX') ? 'transparent' : 'rgba(255, 100, 100, 0.5)';
-        });
 
     d3.selectAll('.overPath')
         .each(function(path) {
             var _this = d3.select(this);
             _this.attr('d', '');
 
-            var targetY = path.parent.y - path.y + path.targetIndex * ruleGap + endYOffset;
+            var targetY = path.parent.y - cutString(d3.select(_this[0][0].parentNode).attr('transform')) + path.targetIndex * ruleGap + endYOffset;
 
-            var startY = startYOffset - (!!~path.factID.indexOf('WA:XX') ? +7 : 0);
+            var startY = startYOffset - (!!~path.factID.indexOf('WA:XX') ? +38 : 0);
 
-            var curve = new Bezier(
-                path.width + 16, startY,
-                path.width + 50, startY,
-                path.parent.x - 50 - path.x, targetY,
-                path.parent.x - path.x, targetY);
-
-            var curveInverted = new Bezier(
-                path.parent.x - path.x, targetY,
-                path.parent.x - 50 - path.x, targetY,
-                path.width + 50, startY,
-                path.width + 16, startY);
-
-            //draw top curve
-            var endWidth = getSalienceWidth(path, true);
-            var rightCurve = function(c, i) { drawCurve(c, i+1, _this, false); };
-            var outline = curve.outline(10,getCertaintyWidth(path, true),endWidth,endWidth);
-            outline.curves.forEach(function(curve, index) {
-                //if (curve.points[0].x !== curve.points[1].x)
-                    rightCurve(curve, index)
-            });
-            drawCenterCurve(curveInverted, 1, _this);
-        })
-        .style('fill', function(d) {
-            return d.fact.certainty === 100 ? 'transparent' : 'rgba(0,0,0,0.6)';
+            drawLine({x:path.width + 16, y: startY}, {x:path.parent.x - path.x, y: targetY}, _this)
         });
+}
 
-    d3.selectAll('.pathText')
-        .attr('x', function(node) {
-            return (node.parent.x - node.x)/2 + 130;
-        })
-        .attr('y', function(node) {
-            //return (node.parent.y - node.y)/2 + 85;
-            return 50;
-        })
-        .text(function(d) {
-            return 'Certainty ' + d.fact.certainty + '%';
-        })
-        .style('fill', function(d) {
-            return d.fact.certainty === 100 ? 'transparent' : 'rgba(0,0,0,0.6)';
-        })
+function updateNodeLine(node, interpolationDelta) {
+    var _this = d3.select(this).select('.overPath');
+    _this.attr('d', '');
+
+    var targetY = node.parent.y - node.y + node.targetIndex * ruleGap + endYOffset;
+    var startY = startYOffset - (!!~node.factID.indexOf('WA:XX') ? +7 : 0);
+
+    drawLine({x:node.width + 16, y: startY}, {x:node.parent.x - node.x, y: targetY}, _this)
 }
 
 
-function drawCurve(curve, index, pathIn, leftSide) {
-    if (!index) {
-        index = 0;
-    }
+function drawLine(start, end, pathIn) {
 
     var path;
     if (pathIn) {
@@ -247,63 +181,13 @@ function drawCurve(curve, index, pathIn, leftSide) {
         path = d3.select('svg').select('path');
     }
 
-    var p = curve.points;
-    var currentPath = path.attr('d');
-
-    var maxIndex = 0;
-    var minIndex = 10;
-    for (var i = 0; i < p.length-1; i++) {
-        if (p[i].x === p[i+1].x) {
-            if (minIndex > index)
-                minIndex = index;
-            if (maxIndex < index)
-                maxIndex = index;
-        }
-    }
-
-    if ((leftSide && index < 5 && index > 0) || (!leftSide && index > 5)) {  //cull to left side of curve. Need to expand out to right side
-        if (p.length === 3) {
-            path.attr('d', function () {
-                return (currentPath ? currentPath : ' M ' + p[0].x + ',' + p[0].y ) +
-                    ' Q ' + p[1].x + ',' + p[1].y +
-                    ' ' + p[2].x + ',' + p[2].y;
-            });
-        }
-        else if (p.length === 4) {
-            path.attr('d', function () {
-                return (currentPath ? currentPath : ' M ' + p[0].x + ',' + p[0].y) +
-                    ' C ' + p[1].x + ',' + p[1].y +
-                    ' ' + p[2].x + ',' + p[2].y +
-                    ' ' + p[3].x + ',' + p[3].y;
-            });
-        }
-    }
-    path
-        .style('fill', leftSide ? 'rgba(255, 100, 100, 0.51)' : 'rgba(0,0,0,0.5)');
-}
-
-function drawCenterCurve(curve, index, pathIn) {
-    var path = pathIn;
-    var p = curve.points;
-    var currentPath = path.attr('d');
-
-    if (p.length === 3) {
-        currentPath += ' L ' + p[2].x + ',' + p[2].y;
-        path.attr('d', function () {
-            return currentPath  +
-                ' Q ' + p[1].x + ',' + p[1].y +
-                ' ' + p[0].x + ',' + p[0].y;
-        });
-    }
-    else if (p.length === 4) {
-        currentPath += ' L ' + p[3].x + ',' + p[3].y;
-        path.attr('d', function () {
-            return currentPath +
-                ' C ' + p[2].x + ',' + p[2].y +
-                ' ' + p[1].x + ',' + p[1].y +
-                ' ' + p[0].x + ',' + p[0].y;
-        });
-    }
+    path.attr('d', function () {
+        return (' M ' + start.x + ',' + start.y ) +
+            ' L ' + start.x + ',' + start.y +
+            '  ' + (start.x + 10) + ',' + start.y +
+            '  ' + (end.x - 10) + ',' + end.y +
+            '  ' + (end.x+8) + ',' + end.y;
+    });
 }
 
 
@@ -343,12 +227,22 @@ function updateColumnYPosition(depth) {
         node.x = xPos + (columns[depth].width-node.width);
         yPos += node.height + 50;
     });
-    recalculate();
     updateNodePositions();
 }
 
 function updateNodePositions() {
-    d3.selectAll('.nodeHolder').transition().duration(500).attr('transform', function(d) { return 'translate(' +d.x + ',' + d.y +')' }).style('opacity', 1);
+    d3.selectAll('.nodeHolder')
+        .transition()
+        .duration(500)
+        .attr('transform', function(d) { return 'translate(' +d.x + ',' + d.y +')' })
+        .style('opacity', 1)
+        .tween("updateLines", function(data,index) {
+            return function() {
+                if(index === 0) {
+                    recalculate();
+                }
+            }
+        });
 }
 
 function getColumnX(depth) {
