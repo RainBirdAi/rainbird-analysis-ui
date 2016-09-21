@@ -38,7 +38,7 @@ header {
 
 .nodeHolder {
     padding: 2px;
-    border-radius: 5px;
+    border-radius: 0px;
     margin: 10px;
     cursor: default;
 }
@@ -66,7 +66,7 @@ header {
     padding: 10px;
     margin: 3px;
     background-color: #EEEEEE;
-    border-radius: 5px;
+    border-radius: 0px;
 }
 
 .holder div+div {
@@ -98,10 +98,14 @@ svg {
 
 .underPath {
     fill: rgb(217, 237, 247);
+    /*stroke: black;*/
+    /*stroke-width: 1px;*/
 }
 
 .overPath {
     fill: red;
+    /*stroke: magenta;*/
+    /*stroke-width: 1px;*/
 }
 
 .blue {
@@ -144,7 +148,7 @@ svg {
 
 .ruleHolder {
     background-color: #eeeeee;
-    border-radius: 5px;
+    border-radius: 0px;
 }
 
 #columnHolder {

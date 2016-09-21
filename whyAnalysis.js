@@ -34,7 +34,7 @@ var zoomer = d3.behavior.zoom()
 d3.select('svg')
     .call(zoomer);
 
-var radius = 5;
+var radius = 0;
 
 var conceptInstances = [];
 
@@ -92,7 +92,7 @@ function addNode(node, depth, parent, collapse) {
     });
     nodeHolder
         .attr('transform', function (d) {
-            return 'translate(' + d.x + ',' + d.y + ')'
+            return 'translate(0,0)'
         });
 
     nodeHolder
@@ -206,12 +206,10 @@ function addNode(node, depth, parent, collapse) {
 
     if (parent) {
         nodeHolder.append('path')
-            .attr('class', 'underPath');
-        nodeHolder.append('path')
-            .attr('class', 'overPath');
-        nodeHolder.append('text')
-            .attr('class', 'pathText')
-            .style('fill', 'rgba(0,0,0,0.6)');
+            .attr('class', 'overPath')
+            .style('stroke', 'rgb(88,88,88)')
+            .style('fill', 'transparent') //todo move to css
+            .style('stroke-width', function(d) { return d.fact.certainty === 100 ? 5 : (d.fact.certainty  < 50 ? 1 : 2); });
     }
 
     node.removeThis = function() {
