@@ -3,7 +3,7 @@
  */
 
 function layoutNode(node, nodeHolder) {
-    var nodeWidth = 200;
+    var nodeWidth = node.source !== 'synthetic' ? 200 : 250 ;
     var ruleBlockStart = 110;
     var subWidth = getWidestLength(nodeHolder.select('.subjectHolder'))+8;
     var relWidth = getWidestLength(nodeHolder.select('.relationshipHolder'))+8;
@@ -28,7 +28,8 @@ function layoutNode(node, nodeHolder) {
     var subPos = tripleNodeWidthDifference/2;
     var relPos = subPos + subWidth + 4;
     var objPos = relPos + relWidth + 4;
-    var nodeHeight = (node.rule ? node.rule.conditions.length * 25 + ruleBlockStart + 6 : 84);
+    var nodeHeight = (node.rule ? node.rule.conditions.length * 25 + ruleBlockStart + 6 : (
+        node.source !== 'synthetic' ? 84 : 40 ));
     node.height = nodeHeight;
 
     nodeHolder.select('rect')
@@ -160,9 +161,13 @@ function recalculate() {
             _this.attr('d', '');
 
             var targetY = path.parent.y - path.y + path.targetIndex * ruleGap + endYOffset;
+            var startY = startYOffset - (!!~path.factID.indexOf('WA:XX') ? +7 : 0);
 
-            var curve = new Bezier(path.width + 16, startYOffset, path.width + 50, startYOffset, path.parent.x - 50 - path.x + xOffset,
-                targetY, path.parent.x - path.x + xOffset, targetY);
+            var curve = new Bezier(
+                path.width + 16, startY,
+                path.width + 50, startY,
+                path.parent.x - 50 - path.x + xOffset, targetY,
+                path.parent.x - path.x + xOffset, targetY);
 
             //draw bottom curve
             var endWidth = getSalienceWidth(path, false);
@@ -173,6 +178,9 @@ function recalculate() {
                     leftCurve(curve, index)
             });
             drawCenterCurve(curve, 1, _this);
+        })
+        .style('fill', function(d) {
+            return !!~d.factID.indexOf('WA:XX') ? 'transparent' : 'rgba(255, 100, 100, 0.5)';
         });
 
     d3.selectAll('.overPath')
@@ -182,17 +190,19 @@ function recalculate() {
 
             var targetY = path.parent.y - path.y + path.targetIndex * ruleGap + endYOffset;
 
+            var startY = startYOffset - (!!~path.factID.indexOf('WA:XX') ? +7 : 0);
+
             var curve = new Bezier(
-                path.width + 16, startYOffset,
-                path.width + 50, startYOffset,
+                path.width + 16, startY,
+                path.width + 50, startY,
                 path.parent.x - 50 - path.x, targetY,
                 path.parent.x - path.x, targetY);
 
             var curveInverted = new Bezier(
                 path.parent.x - path.x, targetY,
                 path.parent.x - 50 - path.x, targetY,
-                path.width + 50, startYOffset,
-                path.width + 16, startYOffset);
+                path.width + 50, startY,
+                path.width + 16, startY);
 
             //draw top curve
             var endWidth = getSalienceWidth(path, true);
@@ -393,6 +403,8 @@ function getSource(source) {
             return 'Fact derived from rule';
         case 'datasource':
             return 'Fact retrived from data-source';
+        case 'synthetic':
+            return 'Fact synthesized to complete condition';
         default:
             return 'break';
     }

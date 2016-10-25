@@ -51,7 +51,7 @@ function start() {
     });
 }
 
-function getConceptInstance(conceptInstance) {
+function getConceptInstance(conceptInstance) {  //todo rename this as it includes relationships too.
     for(var i = 0 ; i < conceptInstances.length; i++) {
         if(conceptInstances[i].type === conceptInstance.type &&
             conceptInstances[i].value === conceptInstance.value) {
@@ -81,7 +81,7 @@ function addNode(node, depth, parent, collapse) {
     var nodeHolder = d3.select('g')
         .append('g');
 
-    nodeHolder.datum(function() {
+    nodeHolder.datum(function () {
         if (parent) {
             node.parent = parent;
             parent.children.push(node);
@@ -89,9 +89,9 @@ function addNode(node, depth, parent, collapse) {
         return node;
     });
     nodeHolder
-        .attr('transform', function(d) {
-                return 'translate(' + d.x + ',' + d.y + ')'
-            });
+        .attr('transform', function (d) {
+            return 'translate(' + d.x + ',' + d.y + ')'
+        });
 
     nodeHolder
         .append('rect')
@@ -99,7 +99,7 @@ function addNode(node, depth, parent, collapse) {
         .attr('rt', radius);
 
     var color;
-    switch(node.source) {
+    switch (node.source) {
         case 'rule':
             color = 'blue';
             break;
@@ -108,6 +108,9 @@ function addNode(node, depth, parent, collapse) {
             break;
         case 'answer':
             color = 'red';
+            break;
+        case 'synthetic':
+            color = 'grey';
             break;
         default:
             color = 'yellow';
@@ -130,63 +133,69 @@ function addNode(node, depth, parent, collapse) {
         .append('text')
         .attr('class', getIcon(node.factID));
 
-    var rowHolder = nodeHolder.append('g').classed('rowHolder', true);
-    rowHolder
-        .append('rect')
-        .classed('white', true);
-    var subjectHolder = rowHolder
-        .append('g')
-        .attr('transform', 'translate(0, 0)')
-        .attr('class', 'subjectHolder holder');
-    subjectHolder
-        .append('rect')
-        .classed(getColor(node.factID), true);
+    if (node.source !== 'synthetic') {
+        var rowHolder = nodeHolder.append('g').classed('rowHolder', true);
+        rowHolder
+            .append('rect')
+            .classed('white', true);
+        var subjectHolder = rowHolder
+            .append('g')
+            .attr('transform', 'translate(0, 0)')
+            .attr('class', 'subjectHolder holder');
+        subjectHolder
+            .append('rect')
+            .classed(getColor(node.factID), true);
         /*.on('mouseenter', function(d) {
-            getConceptInstance(node.fact.subject).selected = true;
-            console.log('in', conceptInstances[0]);
-            d3.selectAll('.subjectHolder')
-                .style('fill', style);
-        })
-        .on('mouseleave', function(d) {
-            getConceptInstance(node.fact.subject).selected = false;
-            console.log('out', conceptInstances[0]);
-            d3.selectAll('.subjectHolder')
-                .style('fill', style);
-        });*/  //TODO enable in a future version - allows highlighting of re-occuring instances of this conceptInstance
-    subjectHolder
-        .append('text')
-        .text(node.fact.subject.type);
-    subjectHolder
-        .append('text')
-        .attr('y', '15')
-        .text(node.fact.subject.value);
+         getConceptInstance(node.fact.subject).selected = true;
+         console.log('in', conceptInstances[0]);
+         d3.selectAll('.subjectHolder')
+         .style('fill', style);
+         })
+         .on('mouseleave', function(d) {
+         getConceptInstance(node.fact.subject).selected = false;
+         console.log('out', conceptInstances[0]);
+         d3.selectAll('.subjectHolder')
+         .style('fill', style);
+         });*/  //TODO enable in a future version - allows highlighting of re-occuring instances of this conceptInstance
+        subjectHolder
+            .append('text')
+            .text(node.fact.subject.type);
+        subjectHolder
+            .append('text')
+            .attr('y', '15')
+            .text(node.fact.subject.value);
 
-    var relationshipHolder = rowHolder
-        .append('g')
-        .attr('transform', 'translate(60, 0)')
-        .attr('class', 'relationshipHolder holder');
-    relationshipHolder
-        .append('rect')
-        .classed(getColor(node.factID), true);
-    relationshipHolder
-        .append('text')
-        .attr('y', '7.5')
-        .text(node.fact.relationship.type);
+        var relationshipHolder = rowHolder
+            .append('g')
+            .attr('transform', 'translate(60, 0)')
+            .attr('class', 'relationshipHolder holder');
+        relationshipHolder
+            .append('rect')
+            .classed(getColor(node.factID), true);
+        relationshipHolder
+            .append('text')
+            .attr('y', '7.5')
+            .text(node.fact.relationship.type);
 
-    var objectHolder = rowHolder
-        .append('g')
-        .attr('transform', 'translate(120, 0)')
-        .attr('class', 'objectHolder holder');
-    objectHolder
-        .append('rect')
-        .classed(getColor(node.factID), true);
-    objectHolder
-        .append('text')
-        .text(node.fact.object.type);
-    objectHolder
-        .append('text')
-        .attr('y', '15')
-        .text(node.fact.object.value);
+        var objectHolder = rowHolder
+            .append('g')
+            .attr('transform', 'translate(120, 0)')
+            .attr('class', 'objectHolder holder');
+        objectHolder
+            .append('rect')
+            .classed(getColor(node.factID), true);
+        objectHolder
+            .append('text')
+            .text(node.fact.object.type);
+        objectHolder
+            .append('text')
+            .attr('y', '15')
+            .text(node.fact.object.value);
+
+        if (node.rule) {
+            addRuleBlock(node, nodeHolder, depth);
+        }
+    }
 
     if (parent) {
         nodeHolder.append('path')
@@ -196,10 +205,6 @@ function addNode(node, depth, parent, collapse) {
         nodeHolder.append('text')
             .attr('class', 'pathText')
             .style('fill', 'rgba(0,0,0,0.6)');
-    }
-
-    if (node.rule) {
-        addRuleBlock(node, nodeHolder, depth);
     }
 
     node.removeThis = function() {
@@ -265,16 +270,17 @@ function addRuleBlock(node, nodeHolder, depth) {
         if (condition.expression) {
             rowHolder
                 .append('rect')
-                .attr('class', getColor(node.factID));
+                .classed(getColor(node.factID), true);
             rowHolder
                 .append('text')
                 .text(getReadableRuleText(node, condition));
         } else {
             rowHolder
                 .append('rect')
-                .attr('class', getColor(node.factID));
+                .classed(getColor(node.factID), true);
             rowHolder
                 .append('text')
+                .classed('zerocertaintycondition', !!~condition.factID.indexOf('WA:XX'))
                 .text(getReadableRuleText(node, condition));
 
             rowHolder.select('text').on('mouseenter', function() {
@@ -288,12 +294,9 @@ function addRuleBlock(node, nodeHolder, depth) {
                 expanded = false;
             };
             rowHolder.on('click', function() {
-                if (!expanded) {
-                    getFact(condition.factID, function(fact) {
-                        if (fact === "") {
-                            alert('dunno why this is empty');
-                        }
-                        else if (!expanded) {
+                if(!~condition.factID.indexOf('WA:XX')) {
+                    getFact(condition.factID, function (fact) {
+                        if (!expanded) {
                             expanded = true;
                             fact.targetIndex = i;
                             fact.targetSalience = condition.salience ? condition.salience : 100;
@@ -301,6 +304,19 @@ function addRuleBlock(node, nodeHolder, depth) {
                             recalculate();
                         }
                     });
+                } else {  //if synthetic fact then don't fetch from evidence store.
+                    if (!expanded) {
+                        expanded = true;
+                        condition.certainty = 0;
+                        addNode({
+                            fact: condition,
+                            factID: condition.factID,
+                            targetIndex: i,
+                            source: 'synthetic',
+                            targetSalience: 100
+                        }, depth + 1, node, collapse); //todo change target salience being hard coded
+                        recalculate();
+                    }
                 }
             });
         }
@@ -308,8 +324,8 @@ function addRuleBlock(node, nodeHolder, depth) {
 }
 
 function getReadableRuleText(node, condition) {
+    var retString = '';
     if (condition.expression) {
-        var retString = '';
         var stringArray = condition.expression.text.split(' ');
         stringArray.forEach(function(subString) {
             if (subString.indexOf('%') === 0) {
@@ -320,10 +336,13 @@ function getReadableRuleText(node, condition) {
             }
             retString += subString + ' ';
         });
-        return retString;
     } else {
-        return condition.subject + ' ' + condition.relationship + ' ' + condition.object;
+        retString = condition.subject + ' ' + condition.relationship + ' ' + condition.object;
     }
+    if (retString.length > 15) {
+        retString = retString.slice(0, 35) + '...';  //todo make this trim loosely near whole words
+    }
+    return retString;
 }
 
 function getRBLangRuleText(condition) {
