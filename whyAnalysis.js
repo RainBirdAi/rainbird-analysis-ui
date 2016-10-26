@@ -65,17 +65,19 @@ function addNode(node, depth, parent, collapse) {
     node.depth = depth;
     node.children = [];
     addToColumn(node, depth);
-    if (!getConceptInstance(node.fact.subject)) {
-        node.fact.subject.selected = false;
-        conceptInstances.push(node.fact.subject);
-    }
-    if (!getConceptInstance(node.fact.relationship)) {
-        node.fact.relationship.selected = false;
-        conceptInstances.push(node.fact.relationship);
-    }
-    if (!getConceptInstance(node.fact.object)) {
-        node.fact.subject.object = false;
-        conceptInstances.push(node.fact.object);
+    if (node.source !== 'expression') {
+        if (!getConceptInstance(node.fact.subject)) {
+            node.fact.subject.selected = false;
+            conceptInstances.push(node.fact.subject);
+        }
+        if (!getConceptInstance(node.fact.relationship)) {
+            node.fact.relationship.selected = false;
+            conceptInstances.push(node.fact.relationship);
+        }
+        if (!getConceptInstance(node.fact.object)) {
+            node.fact.subject.object = false;
+            conceptInstances.push(node.fact.object);
+        }
     }
 
     var nodeHolder = d3.select('g')
@@ -112,6 +114,9 @@ function addNode(node, depth, parent, collapse) {
         case 'synthetic':
             color = 'grey';
             break;
+        case 'expression':
+            color = 'purple';
+            break;
         default:
             color = 'yellow';
             break;
@@ -121,10 +126,12 @@ function addNode(node, depth, parent, collapse) {
     var headerHolder = nodeHolder
         .append('g')
         .classed('headerHolder', true);
-    headerHolder
-        .append('text')
-        .attr('y', 30)
-        .text(node.fact.certainty + '% certain');
+    if(node.source !== 'expression') {
+        headerHolder
+            .append('text')
+            .attr('y', 30)
+            .text(node.fact.certainty + '% certain');
+    }
     headerHolder
         .append('text')
         .attr('y', 15)
@@ -133,7 +140,7 @@ function addNode(node, depth, parent, collapse) {
         .append('text')
         .attr('class', getIcon(node.factID));
 
-    if (node.source !== 'synthetic') {
+    if (node.source !== 'synthetic' && node.source !== 'expression') {
         var rowHolder = nodeHolder.append('g').classed('rowHolder', true);
         rowHolder
             .append('rect')
@@ -263,8 +270,7 @@ function addRuleBlock(node, nodeHolder, depth) {
         .style('fill', 'white');
 
     node.rule.conditions.forEach(function(condition, i) {
-        if (!condition.factID && !condition.expression) //TODO remove this when analysis is fixed
-            return;
+
         var rowHolder = ruleBlock.append('g')
             .attr('id', 'ruleText');
         if (condition.expression) {
@@ -323,7 +329,19 @@ function addRuleBlock(node, nodeHolder, depth) {
     });
 }
 
-function getReadableRuleText(node, condition) {
+
+function trimAndReturnString(stringIn) {
+    var retString = stringIn;
+    if (retString.length > 35) {
+        retString = retString.slice(0, 35) + '...';
+    }
+    return retString;
+}
+
+function getReadableRuleText(node, condition, width) {
+    if (width === undefined) {
+        width = 55;
+    }
     var retString = '';
     if (condition.expression) {
         var stringArray = condition.expression.text.split(' ');
@@ -339,8 +357,8 @@ function getReadableRuleText(node, condition) {
     } else {
         retString = condition.subject + ' ' + condition.relationship + ' ' + condition.object;
     }
-    if (retString.length > 15) {
-        retString = retString.slice(0, 35) + '...';  //todo make this trim loosely near whole words
+    if (retString.length > width) {
+        retString = retString.slice(0, width) + '...';  //todo make this trim loosely near whole words
     }
     return retString;
 }
