@@ -340,7 +340,7 @@ function updateColumnYPosition(depth) {
     var xPos = getColumnX(depth);
     columns[depth].forEach(function (node) {
         node.y = yPos;
-        node.x = xPos;
+        node.x = xPos + (columns[depth].width-node.width);
         yPos += node.height + 50;
     });
     recalculate();
@@ -354,7 +354,7 @@ function updateNodePositions() {
 function getColumnX(depth) {
     var xPos = 0;
     for(var i = 1; i <= depth; i++) {
-        xPos -= columns[i-1].width + 100;
+        xPos -= columns[i].width + 100;
     }
     return xPos;
 }
@@ -405,6 +405,8 @@ function getSource(source) {
             return 'Fact retrived from data-source';
         case 'synthetic':
             return 'Fact synthesized to complete condition';
+        case 'expression':
+            return 'Expression';
         default:
             return 'break';
     }
