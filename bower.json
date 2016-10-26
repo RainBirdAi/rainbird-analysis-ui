@@ -5,6 +5,12 @@
   "authors": [
     "follow@rainbird.ai"
   ],
+  "dependencies": {
+    "sweetalert": "1.1.3",
+    "font-awesome": "4.7.0",
+    "d3": "3.0.x",
+    "bootstrap": "3.3.6"
+  },
   "description": "",
   "main": "whyAnalysis.js",
   "moduleType": [

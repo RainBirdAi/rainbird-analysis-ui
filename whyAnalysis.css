@@ -109,6 +109,9 @@ svg {
 .yellow {
     fill: #f0ad4e;
 }
+.grey {
+    fill: #595959;
+}
 .green {
     fill: #3c763d;
 }
@@ -123,6 +126,9 @@ svg {
 }
 .lightYellow {
     fill: #fcf8e3;
+}
+.zerocertaintycondition {
+    text-decoration: line-through;
 }
 .white {
     fill: #FFFFFF;
