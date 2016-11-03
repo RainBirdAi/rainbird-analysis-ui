@@ -342,7 +342,8 @@ function getReadableRuleText(node, condition, width) {
     }
     var retString = '';
     if (condition.expression) {
-        var stringArray = condition.expression.text.split(' ');
+        var regex = new RegExp('(%[a-zA-Z_]+|.)', 'g');
+        var stringArray = condition.expression.text.split(regex);
         stringArray.forEach(function(subString) {
             if (subString.indexOf('%') === 0) {
                 subString = subString.substring(1);
@@ -350,7 +351,7 @@ function getReadableRuleText(node, condition, width) {
                     subString = node.rule.bindings[subString];
                 }
             }
-            retString += subString + ' ';
+            retString += subString;
         });
     } else {
         retString = condition.subject + ' ' + condition.relationship + ' ' + condition.object;

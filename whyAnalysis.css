@@ -96,16 +96,8 @@ svg {
     height: 70px;
 }
 
-.underPath {
-    fill: rgb(217, 237, 247);
-    /*stroke: black;*/
-    /*stroke-width: 1px;*/
-}
-
 .overPath {
     fill: red;
-    /*stroke: magenta;*/
-    /*stroke-width: 1px;*/
 }
 
 .blue {
