@@ -155,7 +155,7 @@ function recalculate() {
 
             var targetY = path.parent.y - cutString(d3.select(_this[0][0].parentNode).attr('transform')) + path.targetIndex * ruleGap + endYOffset;
 
-            var startY = startYOffset - (!!~path.factID.indexOf('WA:XX') ? +7 : 0);
+            var startY = startYOffset - (!!~path.factID.indexOf('WA:XX') ? +38 : 0);
 
             drawLine({x:path.width + 16, y: startY}, {x:path.parent.x - path.x, y: targetY}, _this)
         });
