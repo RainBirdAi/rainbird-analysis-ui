@@ -125,6 +125,12 @@ function layoutNode(node, nodeHolder) {
         .attr('y', 20)
         .style('font-size', '1.5em')
         .style('fill', 'white');
+
+    nodeHolder.select('#salienceIcon')
+        .attr('x', nodeWidth-10)
+        .attr('y', 100)
+        .style('font-size', '1.5em')
+        .style('fill', 'white');
 }
 
 function getWidestLength(node) {

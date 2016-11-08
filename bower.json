@@ -14,7 +14,8 @@
     "sweetalert": "1.1.3",
     "font-awesome": "4.7.0",
     "d3": "3.0.x",
-    "bootstrap": "3.3.6"
+    "bootstrap": "3.3.6",
+    "jquery": "1.9.x"
   },
   "description": "",
   "main": "whyAnalysis.js",
