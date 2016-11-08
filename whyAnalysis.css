@@ -154,3 +154,49 @@ a:hover {
 a {
     cursor: pointer;
 }
+
+.salienceDiagram text {
+    text-anchor: middle;
+}
+
+.salienceDiagram .circleBG {
+    fill: #ffe79e;
+}
+.salienceDiagram .circleFG {
+    fill: #ebc54b;
+}
+
+.salienceDiagramOuterCF {
+    stroke-width: 25px;
+}
+
+#salienceViewSVG {
+    position: fixed;
+    top: 70px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: white;
+    height: calc(100% - 70px);
+}
+
+.font-awesome-icon {
+    font-family: FontAwesome;
+    cursor: pointer;
+}
+
+.salienceViewCloseButton {
+    position: fixed;
+    top: 90px;
+    right: 30px;
+    font-size: 30px;
+}
+
+.a{ stroke:#783029;fill:#783029; }
+.b{ stroke:#faa295;fill:#faa295; }
+.c{ stroke: #549767;fill:#549767; }
+.d{ stroke:#ffbc81;fill:#ffbc81; }
+.e{ stroke:#d7791f;fill:#d7791f; }
+.f{ stroke:#ebe2cf;fill:#ebe2cf; }
+.g{ stroke: #57948e;fill:#57948e; }
+.h{ stroke:#ffad00;fill:#ffad00; }

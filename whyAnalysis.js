@@ -21,7 +21,7 @@ var pan = d3.behavior.drag()
         d.x -= d3.event.dx;
         d.y -= d3.event.dy;
         d3.select(this).attr("viewBox", function(d,i){
-            return "" + [ d.x,d.y ] + " 700 600"
+            return "" + [ d.x,d.y ] + " 800 800"
         })
     });
 
@@ -31,17 +31,25 @@ function zoom() {
 }
 var zoomer = d3.behavior.zoom()
     .on("zoom", zoom);
-d3.select('svg')
-    .call(zoomer);
+
 
 var radius = 0;
 
 var conceptInstances = [];
 
 function start() {
+    d3.select('svg')
+        .call(zoomer);
 
     d3.select('svg')
         .datum({x:-100, y:-100})
+        .call(pan);
+
+    d3.select('#salienceViewSVG')
+        .call(zoomer);
+
+    d3.select('#salienceViewSVG')
+        .datum({x:-400, y:-350})
         .call(pan);
 
     var firstFactID = window.location.href.split('?id=')[1];
@@ -170,7 +178,7 @@ function addNode(node, depth, parent, collapse) {
         subjectHolder
             .append('text')
             .attr('y', '15')
-            .text(node.fact.subject.value);
+            .text(getReadableSROText(node.fact.subject.value, node.fact.subject.type));
 
         var relationshipHolder = rowHolder
             .append('g')
@@ -197,7 +205,7 @@ function addNode(node, depth, parent, collapse) {
         objectHolder
             .append('text')
             .attr('y', '15')
-            .text(node.fact.object.value);
+            .text(getReadableSROText(node.fact.object.value, node.fact.object.type));
 
         if (node.rule) {
             addRuleBlock(node, nodeHolder, depth);
@@ -225,7 +233,7 @@ function addNode(node, depth, parent, collapse) {
         .append('text')
         .attr('id', 'icon')
         .text('\uf00d')
-        .style('font-family', 'FontAwesome')  //todo move to css
+        .classed('font-awesome-icon', true)
         .style('fill', 'black')
         .on('click', function() {
             node.removeThis();
@@ -249,6 +257,15 @@ function style(d) {
 }
 
 function addRuleBlock(node, nodeHolder, depth) {
+
+    nodeHolder
+        .append('text')
+        .attr('id', 'salienceIcon')
+        .text('\uf2d0')
+        .classed('font-awesome-icon', true)
+        .on('click', function() {
+            showSalience(node);
+        });
 
     /*nodeHolder.append('text')
         .text(node.rule.description);*/  //TODO add this in when it becomes available
@@ -327,7 +344,6 @@ function addRuleBlock(node, nodeHolder, depth) {
     });
 }
 
-
 function trimAndReturnString(stringIn) {
     var retString = stringIn;
     if (retString.length > 35) {
@@ -361,6 +377,28 @@ function getReadableRuleText(node, condition, width) {
     return retString;
 }
 
+function getReadableSROText(text, type, width) {
+    if (width === undefined) {
+        width = 55;
+    }
+    var retString = '';
+
+    switch (type) {
+        case 'date':
+            retString =  new Date(text).toDateString();
+            break;
+        default:
+            retString = text;
+            break;
+
+    }
+
+    if (retString.length > width) {
+        retString = retString.slice(0, width) + '...';  //todo make this trim loosely near whole words
+    }
+    return retString;
+}
+
 function getRBLangRuleText(condition) {
     return condition.subject + ' ' + condition.relationship + ' ' + condition.object;
 }
@@ -377,7 +415,7 @@ function getFact(factID, callback) {
         },
         error: function (data, status) {
             console.error(data, status);
-            alert('error: ' + data + ' ' + status);
+            alert('Error: Could not find fact');
         }
     });
 }
@@ -392,7 +430,7 @@ function getRule(ruleID, callback) {
         },
         error: function (data, status) {
             console.error(data, status);
-            alert('error: ' + data + ' ' + status);
+            alert('Error: Could not find fact');
         }
     });
 }
@@ -407,15 +445,14 @@ function getResults(resultsID, callback) {
         },
         error: function (data, status) {
             console.error(data, status);
-            alert('error: ' + data + ' ' + status);
+            alert('Error: Could not find fact');
         }
     });
 }
 
 start();
 
-function showTips()
-{
+function showTips() {
     function dismiss() {
         swal({
             title: "Show tips on start up?",
@@ -436,46 +473,101 @@ function showTips()
         });
     }
 
-    swal(
-        {
-            title: "Click and drag to pan",
-            text: "",
-            imageUrl: "images/whyAnalysisAnimation1.gif",
+    var finalTip = function () {
+        swal({
+            title: "Knowledge Map triples",
+            text: "Display as fact cards",
+            imageUrl: "images/whyAnalysisFact.png",
             imageSize: "300x300",
-            showCancelButton: true,
+            confirmButtonText: "Done",
+        });
+    };
+
+    var tip4 = function()
+    {
+        swal({
+            title: "'Impact' shows condition contribution to final certainty",
+            text: "",
+            imageUrl: "images/whyAnalysisImpact.png",
+            imageSize: "300x300",
             confirmButtonText: "Tell me more",
             cancelButtonText: "Dismiss",
+            showCancelButton: true,
             closeOnConfirm: false,
             closeOnCancel: false
         }, function (isConfirm) {
             if (isConfirm) {
-                swal({
-                    title: "Expand and collapse facts",
-                    text: "",
-                    imageUrl: "images/whyAnalysisAnimation2.gif",
-                    imageSize: "300x300",
-                    confirmButtonText: "Tell me more",
-                    cancelButtonText: "Dismiss",
-                    showCancelButton: true,
-                    closeOnConfirm: false,
-                    closeOnCancel: false
-                }, function (isConfirm) {
-                    if (isConfirm) {
-                        swal({
-                            title: "Knowledge Map triples",
-                            text: "Display as fact cards",
-                            imageUrl: "images/whyAnalysisFact.png",
-                            imageSize: "300x300",
-                            confirmButtonText: "Ok",
-                        });
-                    } else {
-                        dismiss();
-                    }
-                });
+                finalTip();
             } else {
                 dismiss();
             }
-        });
+        })
+    };
+
+    var tip3 = function()
+    {
+        swal({
+            title: "View salience in detail",
+            text: "",
+            imageUrl: "images/whyAnalysisAnimation4.gif",
+            imageSize: "300x300",
+            confirmButtonText: "Tell me more",
+            cancelButtonText: "Dismiss",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (isConfirm) {
+                tip4();
+            } else {
+                dismiss();
+            }
+        })
+    };
+
+    var tip2 = function()
+    {
+        swal({
+            title: "Expand and collapse facts",
+            text: "",
+            imageUrl: "images/whyAnalysisAnimation2.gif",
+            imageSize: "300x300",
+            confirmButtonText: "Tell me more",
+            cancelButtonText: "Dismiss",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (isConfirm) {
+                tip3();
+            } else {
+                dismiss();
+            }
+        })
+    };
+
+    var tip1 = function() {
+        swal({
+                title: "Click and drag to pan",
+                text: "",
+                imageUrl: "images/whyAnalysisAnimation1.gif",
+                imageSize: "300x300",
+                showCancelButton: true,
+                confirmButtonText: "Tell me more",
+                cancelButtonText: "Dismiss",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    tip2();
+                } else {
+                    dismiss();
+                }
+            });
+    };
+
+    tip1();
 }
 
 if(!storage.RBDontShowIntro || storage.RBDontShowIntro == 'false') {
