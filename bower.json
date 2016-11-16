@@ -6,6 +6,7 @@
     "follow@rainbird.ai"
   ],
   "dependencies": {
+    "jquery": "1.9.1",
     "sweetalert": "1.1.3",
     "font-awesome": "4.7.0",
     "d3": "3.0.x",
