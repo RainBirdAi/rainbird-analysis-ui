@@ -354,7 +354,8 @@ function getReadableRuleText(node, condition, width) {
             retString += subString;
         });
     } else {
-        retString = condition.subject + ' ' + condition.relationship + ' ' + condition.object;
+        retString = (condition.subject.value ? condition.subject.value : condition.subject ) +
+            ' ' + condition.relationship + ' ' + (condition.object.value ? condition.object.value : condition.object );
     }
     if (retString.length > width) {
         retString = retString.slice(0, width) + '...';  //todo make this trim loosely near whole words
