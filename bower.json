@@ -1,6 +1,10 @@
 {
   "name": "rainbird-analysis-ui",
+<<<<<<< a34fbe7bca7435845344871db0bd3881394e42cf
   "version": "2.5.4",
+=======
+  "version": "2.4.3",
+>>>>>>> RBA-20: Fix button not always being clickable
   "homepage": "https://github.com/RainBirdAi/rainbird-analysis-ui",
   "authors": [
     "follow@rainbird.ai"
