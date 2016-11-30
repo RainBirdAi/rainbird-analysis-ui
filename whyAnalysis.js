@@ -44,6 +44,9 @@ function start() {
         .datum({x:-100, y:-100})
         .call(pan);
 
+    d3.select('#tipButton')
+        .on('click', showTips);
+
     var firstFactID = window.location.href.split('?id=')[1];
 
     getFact(firstFactID, function(fact) {
