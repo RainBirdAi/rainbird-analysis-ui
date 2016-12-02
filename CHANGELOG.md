@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.5.0
+
+
+
 ## v2.4.4
 
   *  [Fix] RB-28: Remove inline html code
