@@ -13,6 +13,7 @@ facing release notes.
 ## v2.5.0
 
   *  [Fix] RBA-60: Fix expressions sometimes substituting values incorrectly
+  *  [Fix] RBA-40B: Improve card layout to not overlap on the X access
 
 ## v2.4.4
 
