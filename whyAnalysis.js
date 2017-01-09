@@ -345,7 +345,7 @@ function getReadableRuleText(node, condition, width) {
     }
     var retString = '';
     if (condition.expression) {
-        var regex = new RegExp('(%[a-zA-Z_]+|.)', 'g');
+        var regex = new RegExp('(%[a-zA-Z_0-9]+|.)', 'g');
         var stringArray = condition.expression.text.split(regex);
         stringArray.forEach(function(subString) {
             if (subString.indexOf('%') === 0) {
