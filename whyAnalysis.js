@@ -44,9 +44,6 @@ function start() {
         .datum({x:-100, y:-100})
         .call(pan);
 
-    d3.select('#tipButton')
-        .on('click', showTips);
-
     var firstFactID = window.location.href.split('?id=')[1];
 
     getFact(firstFactID, function(fact) {
@@ -254,7 +251,7 @@ function style(d) {
 function addRuleBlock(node, nodeHolder, depth) {
 
     /*nodeHolder.append('text')
-        .text(node.rule.description);*/  //TODO add this in when it becomes available
+     .text(node.rule.description);*/  //TODO add this in when it becomes available
 
     var ruleBlock = nodeHolder
         .append('g')
@@ -351,7 +348,12 @@ function getReadableRuleText(node, condition, width) {
             if (subString.indexOf('%') === 0) {
                 subString = subString.substring(1);
                 if (node.rule.bindings[subString]) {
-                    subString = node.rule.bindings[subString];
+                    if (node.rule.bindings[subString].type) {
+                        var newDate = new Date(node.rule.bindings[subString].value)
+                        subString =  newDate.getFullYear() + '-' + (newDate.getMonth()+1) + '-' + newDate.getDate();
+                    } else {
+                        subString = node.rule.bindings[subString];
+                    }
                 }
             }
             retString += subString;
@@ -362,6 +364,12 @@ function getReadableRuleText(node, condition, width) {
     }
     if (retString.length > width) {
         retString = retString.slice(0, width) + '...';  //todo make this trim loosely near whole words
+    }
+    if (condition.objectType && condition.objectType === 'date') {
+        console.log('its a date')
+        var date = new Date((condition.object.value ? condition.object.value : condition.object ))
+        retString = (condition.subject.value ? condition.subject.value : condition.subject ) +
+            ' ' + condition.relationship + ' ' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
     }
     return retString;
 }

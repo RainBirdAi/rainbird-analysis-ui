@@ -12,6 +12,7 @@ facing release notes.
 
 ## v2.5.0
 
+  *  [Fix] RB-778: Fix dates showing as milliseconds
   *  [Fix] RBA-60: Fix expressions sometimes substituting values incorrectly
 
 ## v2.4.4
