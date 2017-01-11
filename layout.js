@@ -213,20 +213,24 @@ function removeFromColumn(node, depth) {
 }
 
 function updateColumnYPosition(depth) {
-    var yPos = 0;
-    var widestNode = 0;
-    columns[depth].forEach(function (node) {
-        if (node.width > widestNode) {
-            widestNode = node.width;
-        }
-    });
-    columns[depth].width = widestNode;
-    var xPos = getColumnX(depth);
-    columns[depth].forEach(function (node) {
-        node.y = yPos;
-        node.x = xPos + (columns[depth].width-node.width);
-        yPos += node.height + 50;
-    });
+    for(var i = 0 ; i < columns.length ; i++)
+    {
+        var yPos = 0;
+        var widestNode = 0;
+
+        columns[i].forEach(function (node) {
+            if (node.width > widestNode) {
+                widestNode = node.width;
+            }
+        });
+        columns[i].width = widestNode;
+        var xPos = getColumnX(i);
+        columns[i].forEach(function (node) {
+            node.y = yPos;
+            node.x = xPos + (columns[i].width - node.width);
+            yPos += node.height + 50;
+        });
+    }
     updateNodePositions();
 }
 
