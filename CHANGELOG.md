@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.5.1
+
+  * [Misc] RB-816: Update branding
+
 ## v2.5.0
 
   *  [Fix] RBA-60: Fix expressions sometimes substituting values incorrectly
