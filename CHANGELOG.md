@@ -13,6 +13,7 @@ facing release notes.
 ## v2.5.3
 
   * [Fix] RBA-62: Falsey values in expression would be output incorrectly.
+  * [Fix] RB-778: Fix dates displaying as numbers
 
 ## v2.5.1
 

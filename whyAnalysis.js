@@ -44,6 +44,9 @@ function start() {
         .datum({x:-100, y:-100})
         .call(pan);
 
+    d3.select('#tipButton')
+        .on('click', showTips);
+
     var firstFactID = window.location.href.split('?id=')[1];
 
     getFact(firstFactID, function(fact) {
@@ -361,6 +364,12 @@ function getReadableRuleText(node, condition, width) {
     } else {
         retString = (condition.subject.value ? condition.subject.value : condition.subject ) +
             ' ' + condition.relationship + ' ' + (condition.object.value ? condition.object.value : condition.object );
+    }
+    if (condition.objectType && condition.objectType === 'date') {
+        console.log('its a date')
+        var date = new Date((condition.object.value ? condition.object.value : condition.object ))
+        retString = (condition.subject.value ? condition.subject.value : condition.subject ) +
+            ' ' + condition.relationship + ' ' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
     }
     if (retString.length > width) {
         retString = retString.slice(0, width) + '...';  //todo make this trim loosely near whole words
