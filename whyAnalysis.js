@@ -347,12 +347,12 @@ function getReadableRuleText(node, condition, width) {
         stringArray.forEach(function(subString) {
             if (subString.indexOf('%') === 0) {
                 subString = subString.substring(1);
-                if (node.rule.bindings[subString]) {
+                if (subString in node.rule.bindings) {
                     if (node.rule.bindings[subString].type) {
                         var newDate = new Date(node.rule.bindings[subString].value)
                         subString =  newDate.getFullYear() + '-' + (newDate.getMonth()+1) + '-' + newDate.getDate();
                     } else {
-                        subString = node.rule.bindings[subString];
+                        subString = '' + node.rule.bindings[subString];
                     }
                 }
             }
