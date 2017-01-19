@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.5.3
+
+  * [Fix] RBA-62: Falsey values in expression would be output incorrectly.
+
 ## v2.5.1
 
   * [Misc] RB-816: Update branding
