@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.5.4
+
+  * [Fix] RB-778: Fix dates displaying as numbers
+
 ## v2.5.3
 
   * [Fix] RBA-62: Falsey values in expression would be output incorrectly.
