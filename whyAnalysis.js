@@ -366,7 +366,6 @@ function getReadableRuleText(node, condition, width) {
             ' ' + condition.relationship + ' ' + (condition.object.value ? condition.object.value : condition.object );
     }
     if (condition.objectType && condition.objectType === 'date') {
-        console.log('its a date')
         var date = new Date((condition.object.value ? condition.object.value : condition.object ))
         retString = (condition.subject.value ? condition.subject.value : condition.subject ) +
             ' ' + condition.relationship + ' ' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
