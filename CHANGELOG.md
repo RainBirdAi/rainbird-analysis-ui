@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.6.0
+
+  * [New] RB-36: Add salience view
+
 ## v2.5.4
 
   * [Fix] RB-778: Fix dates displaying as numbers
