@@ -12,7 +12,7 @@ facing release notes.
 
 ## v2.6.0
 
-  * [New] RB-36: Add salience view - need to add more colours before commit!
+  * [New] RB-36: Add salience view
 
 ## v2.5.4
 
