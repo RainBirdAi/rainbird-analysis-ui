@@ -298,6 +298,11 @@ function addRuleBlock(node, nodeHolder, depth) {
             rowHolder
                 .append('text')
                 .text(getReadableRuleText(node, condition));
+
+            if (!condition.wasMet) {
+                rowHolder.select('text').classed('zerocertaintycondition', true);
+            }
+
         } else {
             rowHolder
                 .append('rect')

@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.7.0
+
+  * [New] RB-50: Unmet expressions will have a line-through text decoration.
+
 ## v2.6.0
 
   * [New] RB-36: Add salience view
