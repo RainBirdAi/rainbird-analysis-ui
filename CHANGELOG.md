@@ -10,9 +10,13 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.7.1
+
+  * [New] RB-864: Update why-analysis-ui to display dates correctly for answer and KM facts.
+
 ## v2.7.0
 
-  * [New] RB-50: Unmet expressions will have a line-through text decoration.
+  * [New] RBA-50: Unmet expressions will have a line-through text decoration.
 
 ## v2.6.0
 

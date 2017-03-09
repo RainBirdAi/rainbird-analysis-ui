@@ -181,7 +181,7 @@ function addNode(node, depth, parent, collapse) {
         subjectHolder
             .append('text')
             .attr('y', '15')
-            .text(getReadableSROText(node.fact.subject.value, node.fact.subject.type));
+            .text(getReadableSROText(node.fact.subject.value, node.fact.subject.type, node.fact.subject.dataType));
 
         var relationshipHolder = rowHolder
             .append('g')
@@ -208,7 +208,7 @@ function addNode(node, depth, parent, collapse) {
         objectHolder
             .append('text')
             .attr('y', '15')
-            .text(getReadableSROText(node.fact.object.value, node.fact.object.type));
+            .text(getReadableSROText(node.fact.object.value, node.fact.object.type, node.fact.object.dataType));
 
         if (node.rule) {
             addRuleBlock(node, nodeHolder, depth);
@@ -403,15 +403,18 @@ function getReadableRuleText(node, condition, width) {
     return retString;
 }
 
-function getReadableSROText(text, type, width) {
+function getReadableSROText(text, type, dataType, width) {
     if (width === undefined) {
         width = 55;
     }
     var retString = '';
 
-    switch (type) {
+    var actualType = (dataType ? dataType : type);
+
+    switch (actualType) {
         case 'date':
-            retString =  new Date(text).toDateString();
+            var date = new Date(text);
+            retString = '' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
             break;
         default:
             retString = text;
