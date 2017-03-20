@@ -290,11 +290,11 @@ function getColor(id) {
         case 'AF':
             return 'lightRed';
         case 'IF':
-            return 'glyphicon glyphicon-import';
+            return 'lightRbLime';
         case 'DF':
-            return 'glyphicon glyphicon-cloud-download';
+            return 'lightGreen';
         default:
-            return 'glyphicon glyphicon-asterisk';
+            return 'lightYellow';
     }
 }
 function getSource(source) {
@@ -309,9 +309,11 @@ function getSource(source) {
             return 'Fact retrived from data-source';
         case 'synthetic':
             return 'Fact synthesized to complete condition';
+        case 'injection':
+            return 'Fact injected';
         case 'expression':
             return 'Expression';
         default:
-            return 'break';
+            return '';
     }
 }
