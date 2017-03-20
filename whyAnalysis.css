@@ -119,6 +119,9 @@ svg {
 .purple {
     fill: #4b0082;
 }
+.rbLime {
+    fill: #c0c90d;
+}
 .lightRed {
     fill: #f2dede;
 }
@@ -130,6 +133,9 @@ svg {
 }
 .lightYellow {
     fill: #fcf8e3;
+}
+.lightRbLime {
+    fill: #ffffa6;
 }
 .zerocertaintycondition {
     text-decoration: line-through;

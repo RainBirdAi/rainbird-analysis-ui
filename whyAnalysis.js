@@ -128,6 +128,9 @@ function addNode(node, depth, parent, collapse) {
         case 'expression':
             color = 'purple';
             break;
+        case 'injection':
+            color = 'rbLime';
+            break;
         default:
             color = 'yellow';
             break;

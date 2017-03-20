@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.7.2
+
+  * [Fix] RBA-79: Fix the label and colours used with injected facts and the data source light green.
+  
 ## v2.7.1
 
   * [New] RB-864: Update why-analysis-ui to display dates correctly for answer and KM facts.
