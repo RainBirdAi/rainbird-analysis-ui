@@ -130,7 +130,7 @@ function showSalience(node) {
                 .append('textPath')
                 .attr('xlink:href', '#text-path' + i)
                 .attr('startOffset', '50%')
-                .text('Impact: ' + impact + '%')
+                .text('Impact: ' + (impact*node.fact.certainty/100) + '%')
                 .style('font-size', 'smaller')
                 .style('text-anchor', Math.sin((iterator + condition.salience / 200) * angle) < 0 ? 'end' : 'start');
 
@@ -139,7 +139,7 @@ function showSalience(node) {
                 .append('g');
             textHolder
                 .append('rect')
-                .classed(String.fromCharCode(98 + (i%12)), true);
+                .classed(String.fromCharCode(98 + (i%10)), true);
 
             textHolder
                 .append('text')
