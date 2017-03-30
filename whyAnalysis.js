@@ -267,7 +267,7 @@ function addRuleBlock(node, nodeHolder, depth) {
     nodeHolder
         .append('text')
         .attr('id', 'salienceIcon')
-        .text('\uf2d0')
+        .text('\uf24e')
         .classed('font-awesome-icon', true)
         .on('click', function() {
             showSalience(node);

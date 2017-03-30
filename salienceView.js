@@ -1,6 +1,7 @@
 function hideSalience() {
     d3.select('#salienceViewHolder').html("");
     d3.select('.salienceViewCloseButton').remove();
+    d3.select('defs').selectAll('path').remove();
     d3.select('#salienceViewSVG')
         .classed('hidden', true);
 }
@@ -130,7 +131,7 @@ function showSalience(node) {
                 .append('textPath')
                 .attr('xlink:href', '#text-path' + i)
                 .attr('startOffset', '50%')
-                .text('Impact: ' + (impact*node.fact.certainty/100) + '%')
+                .text('Impact: ' + impact + '%')
                 .style('font-size', 'smaller')
                 .style('text-anchor', Math.sin((iterator + condition.salience / 200) * angle) < 0 ? 'end' : 'start');
 
