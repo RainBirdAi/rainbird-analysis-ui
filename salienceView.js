@@ -88,7 +88,7 @@ function showSalience(node) {
             var nextAngle = ((iterator + (1 * condition.salience / 100)) * angle) - 0.025;
             var nextX2 = Math.sin(nextAngle) * innerRadius;
             var nextY2 = Math.cos(nextAngle) * innerRadius;
-            var impact = Math.round(condition.certainty * condition.salience / salienceTotal);
+            var impact = Math.round(condition.certainty * condition.salience / salienceTotal * 100)/100;
             var largeArcFlag =  impact > 50 ? '1' : '0';
 
             //Condition arc BG
