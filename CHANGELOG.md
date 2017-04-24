@@ -10,6 +10,12 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.8.0
+
+  * [Fix] RBA-81: Fix labels appearing out of place.
+  * [Fix] RBA-83: Fix occasional black labels.
+  * [Fix] RBA-86: Set impact label to display two decimal places.
+
 ## v2.7.2
 
   * [Fix] RBA-79: Fix the label and colours used with injected facts and the data source light green.

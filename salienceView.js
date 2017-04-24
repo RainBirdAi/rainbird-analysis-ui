@@ -1,6 +1,7 @@
 function hideSalience() {
     d3.select('#salienceViewHolder').html("");
     d3.select('.salienceViewCloseButton').remove();
+    d3.select('defs').selectAll('path').remove();
     d3.select('#salienceViewSVG')
         .classed('hidden', true);
 }
@@ -87,7 +88,7 @@ function showSalience(node) {
             var nextAngle = ((iterator + (1 * condition.salience / 100)) * angle) - 0.025;
             var nextX2 = Math.sin(nextAngle) * innerRadius;
             var nextY2 = Math.cos(nextAngle) * innerRadius;
-            var impact = Math.round(condition.certainty * condition.salience / salienceTotal);
+            var impact = Math.round(condition.certainty * condition.salience / salienceTotal * 100)/100;
             var largeArcFlag =  impact > 50 ? '1' : '0';
 
             //Condition arc BG
@@ -139,7 +140,7 @@ function showSalience(node) {
                 .append('g');
             textHolder
                 .append('rect')
-                .classed(String.fromCharCode(98 + (i%12)), true);
+                .classed(String.fromCharCode(98 + (i%10)), true);
 
             textHolder
                 .append('text')
