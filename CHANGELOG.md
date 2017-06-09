@@ -10,7 +10,7 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
-## v2.10.0
+## v2.9.0
 
   * [Fix] RB-1064: Fix large arc flag being incorrect for low impact over 50% relative salience conditions
 
