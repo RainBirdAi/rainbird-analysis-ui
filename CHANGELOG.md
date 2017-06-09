@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.9.0
+
+  * [Fix] RB-1064: Fix large arc flag being incorrect for low impact over 50% relative salience conditions
+
 ## v2.8.0
 
   * [Fix] RBA-81: Fix labels appearing out of place.
