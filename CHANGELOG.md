@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.11.0
+
+  * [Misc] RB-1110: Update component URLs in order to serve the Evidence Tree from rainbird-applications.
+
 ## v2.9.0
 
   * [Fix] RB-1064: Fix large arc flag being incorrect for low impact over 50% relative salience conditions
