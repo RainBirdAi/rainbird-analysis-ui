@@ -12,6 +12,7 @@ facing release notes.
 
 ## v2.11.0
 
+  * [Misc]  RBA-97: Implement salience view improvements.
   * [Misc] RB-1110: Update component URLs in order to serve the Evidence Tree from rainbird-applications.
 
 ## v2.9.0

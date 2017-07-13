@@ -4,6 +4,7 @@ function hideSalience() {
     d3.select('defs').selectAll('path').remove();
     d3.select('#salienceViewSVG')
         .classed('hidden', true);
+    d3.select('#salienceViewSVG').on("mousemove", null);
 }
 
 function showSalience(node) {
@@ -68,8 +69,55 @@ function showSalience(node) {
         .style('font-size', 'x-large')
         .style('fill', 'white');
 
+    var tempArray = node.rule.conditions.slice(0);
+    tempArray.sort(function(a,b) {
+        return a.salience - b.salience;
+    });
+
+    var sortedConditions = tempArray.splice( Math.round(tempArray.length/2) );
+    for(var i = 0 ; i < tempArray.length; i++) {
+        sortedConditions.splice(i*2, 0, tempArray[i]);
+    }
+
+    d3.select('#salienceViewSVG').on("mousemove", function() {
+        var mouseCoords = d3.mouse(circleHolder.node());
+        //find mouse hypotenuse
+        var hyp = Math.sqrt(mouseCoords[0]*mouseCoords[0] + mouseCoords[1]*mouseCoords[1]);
+        //normalize mouse vector
+        mouseCoords[0] /= hyp;
+        mouseCoords[1] /= hyp;
+
+        var closestCondition = null;
+        var bestDotProduct = 0.95;
+        for(var i = 0; i < sortedConditions.length; i++) {
+            //a dot product of two normalized vectors will return a number between 1 and -1 based whether they're
+            //pointing in the same direction (1) opposite directions (-1) or anything in between. This so much more robust than trying to get
+            //the difference between degrees and handling wrapping at 360/0 boundary.
+            var dotProduct = sortedConditions[i].display.vector.x * mouseCoords[0] + sortedConditions[i].display.vector.y * mouseCoords[1];
+            if (dotProduct > bestDotProduct) {
+                closestCondition = sortedConditions[i];
+                bestDotProduct = dotProduct;
+            }
+        }
+
+        for (var i = 0 ; i < sortedConditions.length; i++) {
+            sortedConditions[i].display.line.style('stroke-width', '1px');
+            sortedConditions[i].display.line.style('stroke', 'rgba(0,0,0,0.5')
+            sortedConditions[i].display.box.selectAll('text').style('font-weight', '400');
+            sortedConditions[i].display.box.selectAll('text').style('letter-spacing', '0px');
+        }
+        if (closestCondition != null) {
+            closestCondition.display.line.style('stroke-width', '2px');
+            closestCondition.display.line.style('stroke', 'rgba(0,0,0,0.75');
+            closestCondition.display.box.node().parentNode.appendChild(closestCondition.display.box.node());
+            closestCondition.display.box.selectAll('text').style('font-weight', '500');
+            closestCondition.display.box.selectAll('text').style('letter-spacing', '-0.14px');
+        }
+
+    });
+
     var iterator = 0;
-    node.rule.conditions.forEach(function(condition, i) {
+    sortedConditions.forEach(function(condition, i) {
         if(condition.salience > 0) {
 
             if (condition.expression) {
@@ -91,6 +139,11 @@ function showSalience(node) {
             var impact = Math.round(condition.certainty * condition.salience / salienceTotal * 100)/100;
             var largeArcFlag =  condition.salience / salienceTotal > 0.5 ? '1' : '0';
 
+            condition.display = {};
+            //store normalized condition vector
+            condition.display.vector = {x: Math.sin((iterator + condition.salience / 200) * angle),
+                y: Math.cos((iterator + condition.salience / 200) * angle)};
+
             //Condition arc BG
             svg
                 .append('path')
@@ -105,43 +158,28 @@ function showSalience(node) {
                 .classed('salienceDiagram', true)
                 .append('path')
                 .attr('d', 'M' + xx + ' ' + yy + ' A ' + innerRadius + ' ' + innerRadius + ' 0 ' + largeArcFlag + ' 0 ' + nextX + ' ' + nextY)
-                .classed(String.fromCharCode(98 + i), true)
+                .classed(String.fromCharCode(98 + (i%9)), true)
                 .classed('salienceDiagramOuterCF', true)
                 .style('fill', 'transparent');
 
             //LINE
-            svg
-                .append('path')
+            condition.display.line = svg
+                .append('path');
+            condition.display.line
                 .attr('d', 'M ' + (Math.sin((iterator + condition.salience / 200) * angle) * extremeRadius) + ' ' + (Math.cos((iterator + condition.salience / 200) * angle) * extremeRadius + ' L ' +
                     Math.sin((iterator + condition.salience / 200) * angle) * (outerRadius + 10)) + ' ' + Math.cos((iterator + condition.salience / 200) * angle) * (outerRadius + 10))
                 .style('stroke', 'rgba(0,0,0,0.5')
                 .style('stroke-width', '1px');
 
-            //TEXT LINE
-            d3
-                .select('defs')
-                .append('path')
-                .attr('id', 'text-path' + i)
-                .attr('d', 'M ' + (Math.sin((iterator + condition.salience / 200) * angle) * extremeRadius) + ' ' + (Math.cos((iterator + condition.salience / 200) * angle) * extremeRadius + ' L ' +
-                    Math.sin((iterator + condition.salience / 200) * angle) * (outerRadius + 10)) + ' ' + Math.cos((iterator + condition.salience / 200) * angle) * (outerRadius + 10) + ' Z');
-
-            //IMPACT TEXT
-            svg
-                .append('text')
-                .append('textPath')
-                .attr('xlink:href', '#text-path' + i)
-                .attr('startOffset', '50%')
-                .text('Impact: ' + impact + '%')
-                .style('font-size', 'smaller')
-                .style('text-anchor', Math.sin((iterator + condition.salience / 200) * angle) < 0 ? 'end' : 'start');
-
 
             var textHolder = svg
                 .append('g');
+            condition.display.box = textHolder;
             textHolder
                 .append('rect')
-                .classed(String.fromCharCode(98 + (i%10)), true);
+                .classed( (condition.certainty > 0 ? String.fromCharCode(98 + (i%9)) : 'unmet') , true);
 
+            //S R O TEXT
             textHolder
                 .append('text')
                 .attr('x', Math.sin((iterator + condition.salience / 200) * angle) * extremeRadius)
@@ -149,11 +187,22 @@ function showSalience(node) {
                 .text(condition.subject ? condition.subject + ' ' + condition.relationship + ' ' + condition.object : condition.expression.text)
                 .style('font-size', 'smaller')
                 .style('text-anchor', Math.sin((iterator + condition.salience / 200) * angle) < 0 ? 'end' : 'start');
+
+            //CONDITION TEXT
             textHolder
                 .append('text')
                 .attr('x', Math.sin((iterator + condition.salience / 200) * angle) * extremeRadius)
                 .attr('y', Math.cos((iterator + condition.salience / 200) * angle) * extremeRadius + 16)
                 .text('Certainty: ' + condition.certainty + '%')
+                .style('font-size', '10px')
+                .style('text-anchor', Math.sin((iterator + condition.salience / 200) * angle) < 0 ? 'end' : 'start');
+
+            //IMPACT TEXT
+            textHolder
+                .append('text')
+                .attr('x', Math.sin((iterator + condition.salience / 200) * angle) * extremeRadius)
+                .attr('y', Math.cos((iterator + condition.salience / 200) * angle) * extremeRadius + 32)
+                .text('Impact: ' + impact + '%')
                 .style('font-size', '10px')
                 .style('text-anchor', Math.sin((iterator + condition.salience / 200) * angle) < 0 ? 'end' : 'start');
 
@@ -164,7 +213,7 @@ function showSalience(node) {
                 .attr('x', boundingBox.x - padding)
                 .attr('y', boundingBox.y - padding)
                 .attr('width', boundingBox.width + padding * 2)
-                .attr('height', boundingBox.height + padding * 2);
+                .attr('height', boundingBox.height * 3.5 + padding * 2);
 
             iterator += condition.salience / 100;
         }

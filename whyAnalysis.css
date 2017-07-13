@@ -198,6 +198,7 @@ a {
     font-size: 30px;
 }
 
+.unmet	{ fill: #d9d9d9; stroke: #d9d9d9; }
 .a	{ fill: #8dd3c7; stroke: #8dd3c7; }
 .b	{ fill: #ffffb3; stroke: #ffffb3; }
 .c	{ fill: #bebada; stroke: #bebada; }
@@ -206,6 +207,5 @@ a {
 .f	{ fill: #fdb462; stroke: #fdb462; }
 .g	{ fill: #b3de69; stroke: #b3de69; }
 .h	{ fill: #fccde5; stroke: #fccde5; }
-.i	{ fill: #d9d9d9; stroke: #d9d9d9; }
-.j	{ fill: #bc80bd; stroke: #bc80bd; }
-.k	{ fill: #ccebc5; stroke: #ccebc5; }
+.i	{ fill: #bc80bd; stroke: #bc80bd; }
+.j	{ fill: #ccebc5; stroke: #ccebc5; }
