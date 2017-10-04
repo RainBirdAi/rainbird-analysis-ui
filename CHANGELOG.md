@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.14.0
+
+  * [Misc] RB-1313: Move how project is installed from bower to npm.
+
 ## v2.11.0
 
   * [Misc]  RBA-97: Implement salience view improvements.
