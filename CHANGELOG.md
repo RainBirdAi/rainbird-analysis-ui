@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.18.0
+
+  *  [Fix] RB-1398: Position zero salience conditions higher in the salience view.
+
 ## v2.14.0
 
   * [Misc] RB-1313: Move how project is installed from bower to npm.

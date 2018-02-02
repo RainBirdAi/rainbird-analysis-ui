@@ -227,16 +227,16 @@ function showSalience(node) {
             if(zeroSalienceCounter === 0) {
                 svg
                     .append('text')
-                    .attr('y', -130)
-                    .attr('x', -600)
+                    .attr('y', -268)
+                    .attr('x', -550)
                     .text('Zero salience conditions')
                     .style('text-anchor', 'end');
             }
 
             textHolder
                 .append('text')
-                .attr('y', -100+zeroSalienceCounter * 25)
-                .attr('x', -600)
+                .attr('y', -250 + zeroSalienceCounter * 25)
+                .attr('x', -550)
                 .text(condition.subject ? condition.subject + ' ' + condition.relationship + ' ' + condition.object : condition.expression.text)
                 .style('font-size', 'smaller')
                 .style('text-anchor', 'end');
