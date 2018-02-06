@@ -198,6 +198,10 @@ a {
     font-size: 30px;
 }
 
+.hidden {
+    visibility: hidden;
+}
+
 .unmet	{ fill: #d9d9d9; stroke: #d9d9d9; }
 .a	{ fill: #8dd3c7; stroke: #8dd3c7; }
 .b	{ fill: #ffffb3; stroke: #ffffb3; }
