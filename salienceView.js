@@ -70,12 +70,12 @@ function showSalience(node) {
         .style('fill', 'white');
 
     var tempArray = node.rule.conditions.slice(0);  //deep copy
-	var zeroSalienceArray = [];
-	for(var i = tempArray.length-1 ; i >= 0; i--) {
-		if (tempArray[i].salience === 0) {
-			zeroSalienceArray.push(tempArray.splice(i, 1)[0]);
-		}
-	}
+    var zeroSalienceArray = [];
+    for(var i = tempArray.length-1 ; i >= 0; i--) {
+        if (tempArray[i].salience === 0) {
+            zeroSalienceArray.push(tempArray.splice(i, 1)[0]);
+        }
+    }
     tempArray.sort(function(a,b) {
         return a.salience - b.salience;
     });
