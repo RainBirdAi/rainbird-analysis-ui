@@ -12,7 +12,8 @@ facing release notes.
 
 ## v2.18.0
 
-  *  [Fix]  YOL-922: Fix Jquery version.
+  *  [Fix] RB-1447: Fixed 0 salience conditions being included in the high low sort method.
+  *  [Fix] YOL-922: Fix Jquery version.
   *  [Fix] RB-1398: Position zero salience conditions higher in the salience view.
 
 ## v2.14.0
