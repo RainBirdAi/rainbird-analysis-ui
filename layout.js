@@ -308,7 +308,7 @@ function getSource(source) {
         case 'datasource':
             return 'Fact retrived from data-source';
         case 'synthetic':
-            return 'Fact synthesized to complete condition';
+            return 'Condition not met';
         case 'injection':
             return 'Fact injected';
         case 'expression':
