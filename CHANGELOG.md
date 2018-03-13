@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.19.0
+
+  *  [Fix] RB-1460: Evidence Tree is not rendering text correctly.
+
 ## v2.18.0
 
   *  [Fix] RB-1447: Fixed 0 salience conditions being included in the high low sort method.
