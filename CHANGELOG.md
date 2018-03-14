@@ -12,7 +12,8 @@ facing release notes.
 
 ## v2.19.0
 
-  *  [Fix] RB-1460: Evidence Tree is not rendering text correctly.
+  *  [Misc] RBA-135: Changed 'fact synthesised' wording to to read 'Condition not met'.
+  *  [Fix]  RB-1460: Evidence Tree is not rendering text correctly.
 
 ## v2.18.0
 
