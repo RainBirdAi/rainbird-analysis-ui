@@ -143,15 +143,18 @@ function addNode(node, depth, parent, collapse) {
     if(node.source !== 'expression') {
         headerHolder
             .append('text')
+            .attr('text-rendering','geometricPrecision')
             .attr('y', 30)
             .text(node.fact.certainty + '% certain');
     }
     headerHolder
         .append('text')
+        .attr('text-rendering','geometricPrecision')
         .attr('y', 15)
         .text(getSource(node.source));
     headerHolder
         .append('text')
+        .attr('text-rendering','geometricPrecision')
         .attr('class', getIcon(node.factID));
 
     if (node.source !== 'synthetic' && node.source !== 'expression') {
@@ -180,9 +183,11 @@ function addNode(node, depth, parent, collapse) {
          });*/  //TODO enable in a future version - allows highlighting of re-occuring instances of this conceptInstance
         subjectHolder
             .append('text')
+            .attr('text-rendering','geometricPrecision')
             .text(node.fact.subject.type);
         subjectHolder
             .append('text')
+            .attr('text-rendering','geometricPrecision')
             .attr('y', '15')
             .text(getReadableSROText(node.fact.subject.value, node.fact.subject.type, node.fact.subject.dataType));
 
@@ -195,6 +200,7 @@ function addNode(node, depth, parent, collapse) {
             .classed(getColor(node.factID), true);
         relationshipHolder
             .append('text')
+            .attr('text-rendering','geometricPrecision')
             .attr('y', '7.5')
             .text(node.fact.relationship.type);
 
@@ -207,9 +213,11 @@ function addNode(node, depth, parent, collapse) {
             .classed(getColor(node.factID), true);
         objectHolder
             .append('text')
+            .attr('text-rendering','geometricPrecision')
             .text(node.fact.object.type);
         objectHolder
             .append('text')
+            .attr('text-rendering','geometricPrecision')
             .attr('y', '15')
             .text(getReadableSROText(node.fact.object.value, node.fact.object.type, node.fact.object.dataType));
 
@@ -237,6 +245,7 @@ function addNode(node, depth, parent, collapse) {
 
     nodeHolder
         .append('text')
+        .attr('text-rendering','geometricPrecision')
         .attr('id', 'icon')
         .text('\uf00d')
         .classed('font-awesome-icon', true)
@@ -266,6 +275,7 @@ function addRuleBlock(node, nodeHolder, depth) {
 
     nodeHolder
         .append('text')
+        .attr('text-rendering','geometricPrecision')
         .attr('id', 'salienceIcon')
         .text('\uf2d0')
         .classed('font-awesome-icon', true)
@@ -282,6 +292,7 @@ function addRuleBlock(node, nodeHolder, depth) {
         .classed('ruleHolder', true);
 
     ruleBlock.append('text')
+        .attr('text-rendering','geometricPrecision')
         .attr('y', -13)
         .attr('x', 0)
         .text('Conditions')
@@ -300,6 +311,7 @@ function addRuleBlock(node, nodeHolder, depth) {
                 .classed(getColor(node.factID), true);
             rowHolder
                 .append('text')
+                .attr('text-rendering','geometricPrecision')
                 .text(getReadableRuleText(node, condition));
 
             if (!condition.wasMet) {
@@ -312,6 +324,7 @@ function addRuleBlock(node, nodeHolder, depth) {
                 .classed(getColor(node.factID), true);
             rowHolder
                 .append('text')
+                .attr('text-rendering','geometricPrecision')
                 .classed('zerocertaintycondition', !!~condition.factID.indexOf('WA:XX'))
                 .text(getReadableRuleText(node, condition));
 
