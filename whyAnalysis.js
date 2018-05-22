@@ -1,29 +1,22 @@
 var yolandaUrl = window.location.href.split('?api=')[1];
 var columns = [];
 var storage = localStorage;
-
-var drag = d3.behavior.drag()
-    .on("drag", function(d,i) {
-        //d.x += d3.event.dx;
-        d.y += d3.event.dy;
-        d.fact.subject.selected = true;
-        recalculate();
-        d3.select(this).attr("transform", function(d,i){
-            return "translate(" + [ d.x,d.y ] + ")"
-        })
-    })
-    .on("dragstart", function() {
-        d3.event.sourceEvent.stopPropagation();
-    });
+var minimumPixelChangePanThreshold = 5;
 
 var pan = d3.behavior.drag()
     .on("drag", function(d,i) {
-        d.x -= d3.event.dx;
-        d.y -= d3.event.dy;
-        d3.select(this).attr("viewBox", function(d,i){
-            return "" + [ d.x,d.y ] + " 800 800"
-        })
+        if (applyPan(d3.event.dx, d3.event.dy)) {
+            d.x -= d3.event.dx;
+            d.y -= d3.event.dy;
+            d3.select(this).attr("viewBox", function(d,i){
+                return "" + [ d.x,d.y ] + " 800 800"
+            });
+        }
     });
+
+function applyPan(xAxisPixelChange, yAxisPixelChange) {
+    return (Math.abs(xAxisPixelChange) + Math.abs(yAxisPixelChange)) > minimumPixelChangePanThreshold;
+}
 
 function zoom() {
     d3.select(this).select('g').attr('transform', 'scale(' + d3.event.scale +
@@ -338,7 +331,7 @@ function addRuleBlock(node, nodeHolder, depth) {
             var collapse = function() {
                 expanded = false;
             };
-            rowHolder.on('click', function() {
+            rowHolder.on('mousedown', function() {
                 if(!~condition.factID.indexOf('WA:XX')) {
                     getFact(condition.factID, function (fact) {
                         if (!expanded) {
