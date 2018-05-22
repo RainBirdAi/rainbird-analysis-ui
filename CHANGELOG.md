@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.21.0
+  
+  *  [Misc] RB-1555: Reduce panning sensitivity & improve reliability of clicking.
+
 ## v2.19.0
 
   *  [Misc] RBA-135: Changed 'fact synthesised' wording to to read 'Condition not met'.
