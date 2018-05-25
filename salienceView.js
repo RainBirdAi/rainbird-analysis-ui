@@ -191,7 +191,7 @@ function showSalience(node) {
                 .append('text')
                 .attr('x', Math.sin((iterator + condition.salience / 200) * angle) * extremeRadius)
                 .attr('y', Math.cos((iterator + condition.salience / 200) * angle) * extremeRadius)
-                .text(condition.subject ? condition.subject + ' ' + condition.relationship + ' ' + condition.object : condition.expression.text)
+                .text(getConditionText(condition))
                 .style('font-size', 'smaller')
                 .style('text-anchor', Math.sin((iterator + condition.salience / 200) * angle) < 0 ? 'end' : 'start');
 
@@ -244,7 +244,7 @@ function showSalience(node) {
                 .append('text')
                 .attr('y', -250 + zeroSalienceCounter * 25)
                 .attr('x', -550)
-                .text(condition.subject ? condition.subject + ' ' + condition.relationship + ' ' + condition.object : condition.expression.text)
+                .text(getConditionText(condition))
                 .style('font-size', 'smaller')
                 .style('text-anchor', 'end');
 
@@ -260,4 +260,13 @@ function showSalience(node) {
             zeroSalienceCounter++;
         }
     });
+}
+
+function getConditionText(condition) {
+    if (condition.alt) {
+        return condition.alt;
+    } else {
+        return condition.subject ? condition.subject + ' ' + condition.relationship + ' ' + condition.object
+            : condition.expression.text;
+    }
 }
