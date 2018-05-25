@@ -53,12 +53,12 @@ header {
     height: 100px;
 }
 
-.rowHolder {
+.rowHolder, .altHolder {
     display: -webkit-inline-box;
     width: auto;
 }
 
-.rowHolder text {
+.rowHolder text, .altHolder text {
     fill: rgba(0,0,0,0.65);
 }
 

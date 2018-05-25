@@ -2,6 +2,7 @@ var yolandaUrl = window.location.href.split('?api=')[1];
 var columns = [];
 var storage = localStorage;
 var minimumPixelChangePanThreshold = 5;
+var lineCharacterCountLimit = 55;
 
 var pan = d3.behavior.drag()
     .on("drag", function(d,i) {
@@ -63,6 +64,27 @@ function getConceptInstance(conceptInstance) {  //todo rename this as it include
         }
     }
     return null;
+}
+
+function prepareRuleAltText(nodeHolder, node) {
+    var altHolder = nodeHolder.append('g').classed('altHolder', true);
+    altHolder
+        .append('rect')
+        .classed('white', true);
+
+    var altContentHolder = altHolder
+        .append('g')
+        .attr('transform', 'translate(0, 0)')
+        .attr('class', 'altContentHolder holder');
+    altContentHolder
+        .append('rect')
+        .classed(getColor(node.factID), true);
+
+    altContentHolder
+        .append('svg:title')
+        .text(node.rule.alt);
+
+    appendAltText(altContentHolder, node.rule.alt);
 }
 
 function addNode(node, depth, parent, collapse) {
@@ -151,68 +173,73 @@ function addNode(node, depth, parent, collapse) {
         .attr('class', getIcon(node.factID));
 
     if (node.source !== 'synthetic' && node.source !== 'expression') {
-        var rowHolder = nodeHolder.append('g').classed('rowHolder', true);
-        rowHolder
-            .append('rect')
-            .classed('white', true);
-        var subjectHolder = rowHolder
-            .append('g')
-            .attr('transform', 'translate(0, 0)')
-            .attr('class', 'subjectHolder holder');
-        subjectHolder
-            .append('rect')
-            .classed(getColor(node.factID), true);
-        /*.on('mouseenter', function(d) {
-         getConceptInstance(node.fact.subject).selected = true;
-         console.log('in', conceptInstances[0]);
-         d3.selectAll('.subjectHolder')
-         .style('fill', style);
-         })
-         .on('mouseleave', function(d) {
-         getConceptInstance(node.fact.subject).selected = false;
-         console.log('out', conceptInstances[0]);
-         d3.selectAll('.subjectHolder')
-         .style('fill', style);
-         });*/  //TODO enable in a future version - allows highlighting of re-occuring instances of this conceptInstance
-        subjectHolder
-            .append('text')
-            .attr('text-rendering','geometricPrecision')
-            .text(node.fact.subject.type);
-        subjectHolder
-            .append('text')
-            .attr('text-rendering','geometricPrecision')
-            .attr('y', '15')
-            .text(getReadableSROText(node.fact.subject.value, node.fact.subject.type, node.fact.subject.dataType));
+        if (node.rule && node.rule.alt) {
+            prepareRuleAltText(nodeHolder, node);
+        } else {
+            var rowHolder = nodeHolder.append('g').classed('rowHolder', true);
+            rowHolder
+                .append('rect')
+                .classed('white', true);
 
-        var relationshipHolder = rowHolder
-            .append('g')
-            .attr('transform', 'translate(60, 0)')
-            .attr('class', 'relationshipHolder holder');
-        relationshipHolder
-            .append('rect')
-            .classed(getColor(node.factID), true);
-        relationshipHolder
-            .append('text')
-            .attr('text-rendering','geometricPrecision')
-            .attr('y', '7.5')
-            .text(node.fact.relationship.type);
+            var subjectHolder = rowHolder
+                .append('g')
+                .attr('transform', 'translate(0, 0)')
+                .attr('class', 'subjectHolder holder');
+            subjectHolder
+                .append('rect')
+                .classed(getColor(node.factID), true);
+            /*.on('mouseenter', function(d) {
+             getConceptInstance(node.fact.subject).selected = true;
+             console.log('in', conceptInstances[0]);
+             d3.selectAll('.subjectHolder')
+             .style('fill', style);
+             })
+             .on('mouseleave', function(d) {
+             getConceptInstance(node.fact.subject).selected = false;
+             console.log('out', conceptInstances[0]);
+             d3.selectAll('.subjectHolder')
+             .style('fill', style);
+             });*/  //TODO enable in a future version - allows highlighting of re-occuring instances of this conceptInstance
+            subjectHolder
+                .append('text')
+                .attr('text-rendering','geometricPrecision')
+                .text(node.fact.subject.type);
+            subjectHolder
+                .append('text')
+                .attr('text-rendering','geometricPrecision')
+                .attr('y', '15')
+                .text(getReadableSROText(node.fact.subject.value, node.fact.subject.type, node.fact.subject.dataType));
 
-        var objectHolder = rowHolder
-            .append('g')
-            .attr('transform', 'translate(120, 0)')
-            .attr('class', 'objectHolder holder');
-        objectHolder
-            .append('rect')
-            .classed(getColor(node.factID), true);
-        objectHolder
-            .append('text')
-            .attr('text-rendering','geometricPrecision')
-            .text(node.fact.object.type);
-        objectHolder
-            .append('text')
-            .attr('text-rendering','geometricPrecision')
-            .attr('y', '15')
-            .text(getReadableSROText(node.fact.object.value, node.fact.object.type, node.fact.object.dataType));
+            var relationshipHolder = rowHolder
+                .append('g')
+                .attr('transform', 'translate(60, 0)')
+                .attr('class', 'relationshipHolder holder');
+            relationshipHolder
+                .append('rect')
+                .classed(getColor(node.factID), true);
+            relationshipHolder
+                .append('text')
+                .attr('text-rendering','geometricPrecision')
+                .attr('y', '7.5')
+                .text(node.fact.relationship.type);
+
+            var objectHolder = rowHolder
+                .append('g')
+                .attr('transform', 'translate(120, 0)')
+                .attr('class', 'objectHolder holder');
+            objectHolder
+                .append('rect')
+                .classed(getColor(node.factID), true);
+            objectHolder
+                .append('text')
+                .attr('text-rendering','geometricPrecision')
+                .text(node.fact.object.type);
+            objectHolder
+                .append('text')
+                .attr('text-rendering','geometricPrecision')
+                .attr('y', '15')
+                .text(getReadableSROText(node.fact.object.value, node.fact.object.type, node.fact.object.dataType));
+        }
 
         if (node.rule) {
             addRuleBlock(node, nodeHolder, depth);
@@ -260,6 +287,36 @@ function addNode(node, depth, parent, collapse) {
         .style('opacity', 1);
 }
 
+function appendAltText(holder, text) {
+    if (text.length > lineCharacterCountLimit){
+        var lastSpace = text.substring(0, lineCharacterCountLimit).lastIndexOf(' ');
+        holder
+            .append('text')
+            .attr('text-rendering','geometricPrecision')
+            .attr('y', 5)
+            .text(text.substring(0, (lastSpace > 0) ? lastSpace : lineCharacterCountLimit));
+
+        var remainingText = text.slice((lastSpace > 0) ? lastSpace : lineCharacterCountLimit);
+
+        if (remainingText.length > lineCharacterCountLimit) {
+            remainingText = trimAndReturnString(remainingText);
+        }
+
+        holder
+            .append('text')
+            .attr('text-rendering','geometricPrecision')
+            .attr('y', 25)
+            .text(remainingText);
+
+    } else {
+        holder
+            .append('text')
+            .attr('text-rendering','geometricPrecision')
+            .attr('y', 7.5)
+            .text(text);
+    }
+}
+
 function style(d) {
     return getConceptInstance(d.fact.subject).selected ? 'blue' : 'red';
 }
@@ -298,6 +355,11 @@ function addRuleBlock(node, nodeHolder, depth) {
 
         var rowHolder = ruleBlock.append('g')
             .attr('id', 'ruleText');
+
+        var ruleText = getReadableRuleText(node, condition);
+
+        var conditionTabText = ruleText.trimmed ? ruleText.trimmed : ruleText.fullText;
+
         if (condition.expression) {
             rowHolder
                 .append('rect')
@@ -305,7 +367,11 @@ function addRuleBlock(node, nodeHolder, depth) {
             rowHolder
                 .append('text')
                 .attr('text-rendering','geometricPrecision')
-                .text(getReadableRuleText(node, condition));
+                .text(conditionTabText);
+
+            rowHolder
+                .append('svg:title')
+                .text(ruleText.fullText);
 
             if (!condition.wasMet) {
                 rowHolder.select('text').classed('zerocertaintycondition', true);
@@ -319,13 +385,17 @@ function addRuleBlock(node, nodeHolder, depth) {
                 .append('text')
                 .attr('text-rendering','geometricPrecision')
                 .classed('zerocertaintycondition', !!~condition.factID.indexOf('WA:XX'))
-                .text(getReadableRuleText(node, condition));
+                .text(conditionTabText);
+
+            rowHolder
+                .append('svg:title')
+                .text(ruleText.fullText);
 
             rowHolder.select('text').on('mouseenter', function() {
                 d3.select(this).text(getRBLangRuleText(condition));
             });
             rowHolder.select('text').on('mouseleave', function() {
-                d3.select(this).text(getReadableRuleText(node, condition));
+                d3.select(this).text(conditionTabText);
             });
             var expanded = false;
             var collapse = function() {
@@ -361,19 +431,39 @@ function addRuleBlock(node, nodeHolder, depth) {
     });
 }
 
-function trimAndReturnString(stringIn) {
+function trimAndReturnString(stringIn, width) {
     var retString = stringIn;
-    if (retString.length > 35) {
-        retString = retString.slice(0, 35) + '...';
+
+    var limit = width ? width : lineCharacterCountLimit;
+
+    if (retString.length > limit) {
+        retString = retString.slice(0, limit - 3) + '...';
     }
     return retString;
 }
 
-function getReadableRuleText(node, condition, width) {
-    if (width === undefined) {
-        width = 55;
+function checkWidthAndTrim(result, width) {
+    if (result.fullText.length > width) {
+        var lastSpace = result.fullText.substring(0, width).lastIndexOf(' ');
+        result.trimmed = trimAndReturnString(result.fullText, (lastSpace > 0) ? lastSpace : width);
     }
-    var retString = '';
+}
+
+function getReadableRuleText(node, condition, width) {
+    var result = {
+        fullText: ''
+    };
+
+    if (width === undefined) {
+        width = lineCharacterCountLimit;
+    }
+
+    if (condition.alt) {
+        result.fullText = condition.alt;
+        checkWidthAndTrim(result, width);
+        return result;
+    }
+
     if (condition.expression) {
         var regex = new RegExp('(%[a-zA-Z_0-9]+|.)', 'g');
         var stringArray = condition.expression.text.split(regex);
@@ -382,40 +472,40 @@ function getReadableRuleText(node, condition, width) {
                 subString = subString.substring(1);
                 if (subString in node.rule.bindings) {
                     if (node.rule.bindings[subString].type) {
-                        var newDate = new Date(node.rule.bindings[subString].value)
+                        var newDate = new Date(node.rule.bindings[subString].value);
                         subString =  newDate.getFullYear() + '-' + (newDate.getMonth()+1) + '-' + newDate.getDate();
                     } else {
                         subString = '' + node.rule.bindings[subString];
                     }
                 }
             }
-            retString += subString;
+            result.fullText += subString;
         });
     } else {
-        retString = (condition.subject.value ? condition.subject.value : condition.subject ) +
+        result.fullText = (condition.subject.value ? condition.subject.value : condition.subject ) +
             ' ' + condition.relationship + ' ' + (condition.object.value ? condition.object.value : condition.object );
     }
     if (condition.objectType && condition.objectType === 'date') {
-        var date = new Date((condition.object.value ? condition.object.value : condition.object ))
-        retString = (condition.subject.value ? condition.subject.value : condition.subject ) +
+        var date = new Date((condition.object.value ? condition.object.value : condition.object ));
+        result.fullText = (condition.subject.value ? condition.subject.value : condition.subject ) +
             ' ' + condition.relationship + ' ' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
     }
-    if (retString.length > width) {
-        retString = retString.slice(0, width) + '...';  //todo make this trim loosely near whole words
-    }
+
     if (condition.objectType && condition.objectType === 'date') {
-        console.log('its a date')
-        var date = new Date((condition.object.value ? condition.object.value : condition.object ))
-        retString = (condition.subject.value ? condition.subject.value : condition.subject ) +
+        var date = new Date((condition.object.value ? condition.object.value : condition.object ));
+        result.fullText = (condition.subject.value ? condition.subject.value : condition.subject ) +
             ' ' + condition.relationship + ' ' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
     }
-    return retString;
+
+    checkWidthAndTrim(result, width);
+    return result;
 }
 
 function getReadableSROText(text, type, dataType, width) {
     if (width === undefined) {
-        width = 55;
+        width = lineCharacterCountLimit;
     }
+
     var retString = '';
 
     var actualType = (dataType ? dataType : type);
@@ -432,8 +522,10 @@ function getReadableSROText(text, type, dataType, width) {
     }
 
     if (retString.length > width) {
-        retString = retString.slice(0, width) + '...';  //todo make this trim loosely near whole words
+        var lastSpace = retString.substring(0, width).lastIndexOf(' ');
+        retString = trimAndReturnString(retString, (lastSpace > 0) ? lastSpace : width);
     }
+
     return retString;
 }
 
