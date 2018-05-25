@@ -4,10 +4,13 @@
 
 function layoutNode(node, nodeHolder) {
     var nodeWidth = node.source !== 'synthetic' ? 200 : 250 ;
-    var ruleBlockStart = 110;
+    var altTextRows = nodeHolder.select('.altHolder').selectAll('text')[0];
+    var doubleRowRuleAlt = altTextRows && altTextRows.length === 2;
+    var ruleBlockStart = doubleRowRuleAlt ? 125: 110;
     var subWidth = getWidestLength(nodeHolder.select('.subjectHolder'))+8;
     var relWidth = getWidestLength(nodeHolder.select('.relationshipHolder'))+8;
     var objWidth = getWidestLength(nodeHolder.select('.objectHolder'))+8;
+    var altWidth = getWidestLength(nodeHolder.select('.altHolder'));
 
     nodeHolder.select('#ruleBlock')
         .selectAll('text').each(function() {
@@ -16,9 +19,15 @@ function layoutNode(node, nodeHolder) {
             nodeWidth = boundingBox.width;
         }
     });
+
     if (nodeWidth < subWidth+relWidth+objWidth) {
         nodeWidth = subWidth+relWidth+objWidth;
     }
+
+    if (nodeWidth < altWidth) {
+        nodeWidth = altWidth;
+    }
+
     nodeWidth += 10;
     nodeHolder.datum(function(d) {
         d.width = nodeWidth;
@@ -41,6 +50,29 @@ function layoutNode(node, nodeHolder) {
 
     nodeHolder.select('.rowHolder')
         .attr('transform', 'translate(4,54)');
+
+    nodeHolder.select('.altHolder')
+        .attr('transform', 'translate(4,54)');
+
+    nodeHolder.select('.altHolder')
+        .select('rect')
+        .attr('width', nodeWidth + 8)
+        .attr('height', doubleRowRuleAlt ? 55 : 40)
+        .attr('y', -15)
+        .attr('rx', 0);
+
+    nodeHolder.select('.altHolder')
+        .select('.holder')
+        .select('rect')
+        .attr('width', nodeWidth)
+        .attr('height', doubleRowRuleAlt ? 45 : 30)
+        .attr('y', -11)
+        .attr('x', 4)
+        .attr('rx', 0);
+
+    nodeHolder.select('.altHolder')
+        .selectAll('text')
+        .attr('x', 5);
 
     //Position triple set
     nodeHolder.select('.rowHolder')
@@ -128,7 +160,7 @@ function layoutNode(node, nodeHolder) {
 
     nodeHolder.select('#salienceIcon')
         .attr('x', nodeWidth-10)
-        .attr('y', 100)
+        .attr('y', doubleRowRuleAlt ? 115 : 100)
         .style('font-size', '1.5em')
         .style('fill', 'white');
 }
