@@ -10,8 +10,12 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
-## v2.21.0
+## v2.22.0
   
+  *  [Misc] RB-1582: Display condition alt text in the clock view.
+
+## v2.21.0
+
   *  [New]  YOL-860: Display condition alt text in the clock view.
   *  [New]  YOL-859: Display alt text in the tree view.
   *  [Misc] RB-1555: Reduce panning sensitivity & improve reliability of clicking.

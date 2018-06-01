@@ -3,6 +3,10 @@ var columns = [];
 var storage = localStorage;
 var minimumPixelChangePanThreshold = 5;
 var lineCharacterCountLimit = 55;
+var _cardIDCounter = 1;
+var getNextCardId = function() {
+    return 'card' + _cardIDCounter++;
+}
 
 var pan = d3.behavior.drag()
     .on("drag", function(d,i) {
@@ -107,7 +111,8 @@ function addNode(node, depth, parent, collapse) {
     }
 
     var nodeHolder = d3.select('g')
-        .append('g');
+        .append('g')
+        .attr('id', getNextCardId());
 
     nodeHolder.datum(function () {
         if (parent) {
@@ -208,6 +213,7 @@ function addNode(node, depth, parent, collapse) {
                 .append('text')
                 .attr('text-rendering','geometricPrecision')
                 .attr('y', '15')
+                .classed('factText', true)
                 .text(getReadableSROText(node.fact.subject.value, node.fact.subject.type, node.fact.subject.dataType));
 
             var relationshipHolder = rowHolder
@@ -221,6 +227,7 @@ function addNode(node, depth, parent, collapse) {
                 .append('text')
                 .attr('text-rendering','geometricPrecision')
                 .attr('y', '7.5')
+                .classed('factText', true)
                 .text(node.fact.relationship.type);
 
             var objectHolder = rowHolder
@@ -236,6 +243,7 @@ function addNode(node, depth, parent, collapse) {
                 .text(node.fact.object.type);
             objectHolder
                 .append('text')
+                .classed('factText', true)
                 .attr('text-rendering','geometricPrecision')
                 .attr('y', '15')
                 .text(getReadableSROText(node.fact.object.value, node.fact.object.type, node.fact.object.dataType));
@@ -354,7 +362,8 @@ function addRuleBlock(node, nodeHolder, depth) {
     node.rule.conditions.forEach(function(condition, i) {
 
         var rowHolder = ruleBlock.append('g')
-            .attr('id', 'ruleText');
+            .attr('id', 'ruleText')
+            .classed('condition' + (i+1), true);
 
         var ruleText = getReadableRuleText(node, condition);
 
@@ -366,6 +375,7 @@ function addRuleBlock(node, nodeHolder, depth) {
                 .classed(getColor(node.factID), true);
             rowHolder
                 .append('text')
+                .classed('conditiontext', true)
                 .attr('text-rendering','geometricPrecision')
                 .text(conditionTabText);
 
@@ -384,6 +394,7 @@ function addRuleBlock(node, nodeHolder, depth) {
             rowHolder
                 .append('text')
                 .attr('text-rendering','geometricPrecision')
+                .classed('conditiontext', true)
                 .classed('zerocertaintycondition', !!~condition.factID.indexOf('WA:XX'))
                 .text(conditionTabText);
 
