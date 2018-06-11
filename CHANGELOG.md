@@ -12,7 +12,7 @@ facing release notes.
 
 ## v2.22.0
   
-  *  [Misc] RB-1582: Display condition alt text in the clock view.
+  *  [Misc] RB-1582: ID and class changes to aid selenium testing
 
 ## v2.21.0
 
