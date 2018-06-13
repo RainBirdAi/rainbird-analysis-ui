@@ -10,13 +10,17 @@ var getNextCardId = function() {
 
 var pan = d3.behavior.drag()
     .on("drag", function(d,i) {
-        if (applyPan(d3.event.dx, d3.event.dy)) {
+        if (isDragging || applyPan(d3.event.dx, d3.event.dy)) {
+            isDragging = true;
             d.x -= d3.event.dx;
             d.y -= d3.event.dy;
             d3.select(this).attr("viewBox", function(d,i){
                 return "" + [ d.x,d.y ] + " 800 800"
             });
         }
+    })
+    .on('dragend', function() {
+        isDragging = false;
     });
 
 function applyPan(xAxisPixelChange, yAxisPixelChange) {
@@ -32,12 +36,15 @@ var zoomer = d3.behavior.zoom()
 
 
 var radius = 0;
+var isDragging = false;
 
 var conceptInstances = [];
 
 function start() {
     d3.select('svg')
         .call(zoomer);
+
+    d3.select('svg').on("dblclick.zoom", null);
 
     d3.select('svg')
         .datum({x:-100, y:-100})
@@ -271,16 +278,18 @@ function addNode(node, depth, parent, collapse) {
         nodeHolder[0][0].remove();
     };
 
-    nodeHolder
-        .append('text')
-        .attr('text-rendering','geometricPrecision')
-        .attr('id', 'icon')
-        .text('\uf00d')
-        .classed('font-awesome-icon', true)
-        .style('fill', 'black')
-        .on('click', function() {
-            node.removeThis();
-        });
+    if (node.depth > 0) {
+        nodeHolder
+                .append('text')
+                .attr('text-rendering', 'geometricPrecision')
+                .attr('id', 'icon')
+                .text('\uf00d')
+                .classed('font-awesome-icon', true)
+                .style('fill', 'black')
+                .on('mousedown', function () {
+                    node.removeThis();
+                });
+    }
 
     layoutNode(node, nodeHolder);
     updateColumnYPosition(depth);
@@ -337,7 +346,7 @@ function addRuleBlock(node, nodeHolder, depth) {
         .attr('id', 'salienceIcon')
         .text('\uf2d0')
         .classed('font-awesome-icon', true)
-        .on('click', function() {
+        .on('mousedown', function() {
             showSalience(node);
         });
 
