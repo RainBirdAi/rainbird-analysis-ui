@@ -12,6 +12,7 @@ facing release notes.
 
 ## v2.22.0
   
+  *   [Fix] RB-1579: Ensure Evidence Tree card headings are not obscured by close icon.
   *   [Fix] RB-1634: Improve click reliability and remove double click zoom behaviour
   *  [Misc] RB-1582: ID and class changes to aid selenium testing
 
