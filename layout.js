@@ -11,6 +11,7 @@ function layoutNode(node, nodeHolder) {
     var relWidth = getWidestLength(nodeHolder.select('.relationshipHolder'))+8;
     var objWidth = getWidestLength(nodeHolder.select('.objectHolder'))+8;
     var altWidth = getWidestLength(nodeHolder.select('.altHolder'));
+    var headerWidth = getWidestLength(nodeHolder.select('.headerHolder'));
 
     nodeHolder.select('#ruleBlock')
         .selectAll('text').each(function() {
@@ -26,6 +27,10 @@ function layoutNode(node, nodeHolder) {
 
     if (nodeWidth < altWidth) {
         nodeWidth = altWidth;
+    }
+
+    if (nodeWidth < headerWidth) {
+        nodeWidth = headerWidth;
     }
 
     nodeWidth += 10;
@@ -338,7 +343,7 @@ function getSource(source) {
         case 'rule':
             return 'Fact derived from rule';
         case 'datasource':
-            return 'Fact retrived from data-source';
+            return 'Fact retrieved from data-source';
         case 'synthetic':
             return 'Condition not met';
         case 'injection':
