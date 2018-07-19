@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.23.0
+
+  * [Misc] RB-3193: Added basic Google analytics - page view tracking.
+
 ## v2.22.0
   
   *   [Fix] RB-1579: Ensure Evidence Tree card headings are not obscured by close icon.
