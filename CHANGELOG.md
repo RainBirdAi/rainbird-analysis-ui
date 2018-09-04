@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.25.0
+
+  * [Fix] RB-1371: Date displayed incorrectly in Salience view.
+
 ## v2.23.0
 
   * [Misc] RB-3193: Added basic Google analytics - page view tracking.

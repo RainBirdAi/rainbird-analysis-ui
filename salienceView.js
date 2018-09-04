@@ -266,7 +266,7 @@ function getConditionText(condition) {
     if (condition.alt) {
         return condition.alt;
     } else {
-        return condition.subject ? condition.subject + ' ' + condition.relationship + ' ' + condition.object
+        return condition.subject ? condition.subject + ' ' + condition.relationship + ' ' + getReadableSROText(condition.object, null, condition.objectType)
             : condition.expression.text;
     }
 }
