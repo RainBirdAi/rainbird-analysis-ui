@@ -144,7 +144,8 @@ function showSalience(node) {
             var nextX2 = Math.sin(nextAngle) * innerRadius;
             var nextY2 = Math.cos(nextAngle) * innerRadius;
             var impact = Math.round(condition.certainty * condition.salience / salienceTotal * 100)/100;
-            var largeArcFlag =  condition.salience / salienceTotal > 0.5 ? '1' : '0';
+            var largeArcFlagBG =  condition.salience / salienceTotal > 0.5 ? '1' : '0';
+            var largeArcFlagFG =  impact > 50 ? '1' : '0';
 
             condition.display = {};
             //store normalized condition vector
@@ -154,7 +155,7 @@ function showSalience(node) {
             //Condition arc BG
             svg
                 .append('path')
-                .attr('d', 'M' + xx + ' ' + yy + ' A ' + innerRadius + ' ' + innerRadius + ' 0 ' + largeArcFlag + ' 0 ' + nextX2 + ' ' + nextY2)
+                .attr('d', 'M' + xx + ' ' + yy + ' A ' + innerRadius + ' ' + innerRadius + ' 0 ' + largeArcFlagBG + ' 0 ' + nextX2 + ' ' + nextY2)
                 .classed('salienceDiagramOuterCF', true)
                 .style('stroke', 'rgba(0,0,0,0.25)')
                 .style('stroke-width', '15px')
@@ -164,7 +165,7 @@ function showSalience(node) {
             svg
                 .classed('salienceDiagram', true)
                 .append('path')
-                .attr('d', 'M' + xx + ' ' + yy + ' A ' + innerRadius + ' ' + innerRadius + ' 0 ' + largeArcFlag + ' 0 ' + nextX + ' ' + nextY)
+                .attr('d', 'M' + xx + ' ' + yy + ' A ' + innerRadius + ' ' + innerRadius + ' 0 ' + largeArcFlagFG + ' 0 ' + nextX + ' ' + nextY)
                 .classed(String.fromCharCode(98 + (i%9)), true)
                 .classed('salienceDiagramOuterCF', true)
                 .style('fill', 'transparent');

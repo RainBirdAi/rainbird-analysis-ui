@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.26.0
+
+  * [Fix] RB-3501: Fix salience view arcs sometimes rendering incorrectly.
+
 ## v2.25.0
 
   * [Fix] RB-1371: Date displayed incorrectly in Salience view.

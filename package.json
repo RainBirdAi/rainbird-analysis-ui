@@ -1,6 +1,6 @@
 {
   "name": "rainbird-analysis-ui",
-  "version": "2.26.0",
+  "version": "2.26.1",
   "publishConfig": {
     "registry": "https://npm.rainbird.ai"
   }
