@@ -188,19 +188,25 @@ function showSalience(node) {
                 .classed( (condition.certainty > 0 ? String.fromCharCode(98 + (i%9)) : 'unmet') , true);
 
             //S R O TEXT
-            textHolder
-                .append('text')
-                .attr('x', Math.sin((iterator + condition.salience / 200) * angle) * extremeRadius)
-                .attr('y', Math.cos((iterator + condition.salience / 200) * angle) * extremeRadius)
-                .text(getConditionText(condition))
-                .style('font-size', 'smaller')
-                .style('text-anchor', Math.sin((iterator + condition.salience / 200) * angle) < 0 ? 'end' : 'start');
+            let textToUse = getMultilineConditionText(condition);
+            let lineYOffset = 0;
+            textToUse.forEach(function(text) {
+                textHolder
+                        .append('text')
+                        .attr('x', Math.sin((iterator + condition.salience / 200) * angle) * extremeRadius)
+                        .attr('y', Math.cos((iterator + condition.salience / 200) * angle) * extremeRadius + lineYOffset)
+                        .text(text)
+                        .style('font-size', 'smaller')
+                        .style('text-anchor', Math.sin((iterator + condition.salience / 200) * angle) < 0 ? 'end' : 'start');
 
-            //CONDITION TEXT
+                lineYOffset += 16;
+            });
+
+            //CF TEXT
             textHolder
                 .append('text')
                 .attr('x', Math.sin((iterator + condition.salience / 200) * angle) * extremeRadius)
-                .attr('y', Math.cos((iterator + condition.salience / 200) * angle) * extremeRadius + 16)
+                .attr('y', Math.cos((iterator + condition.salience / 200) * angle) * extremeRadius + lineYOffset)
                 .text('Certainty: ' + condition.certainty + '%')
                 .style('font-size', '10px')
                 .style('text-anchor', Math.sin((iterator + condition.salience / 200) * angle) < 0 ? 'end' : 'start');
@@ -209,7 +215,7 @@ function showSalience(node) {
             textHolder
                 .append('text')
                 .attr('x', Math.sin((iterator + condition.salience / 200) * angle) * extremeRadius)
-                .attr('y', Math.cos((iterator + condition.salience / 200) * angle) * extremeRadius + 32)
+                .attr('y', Math.cos((iterator + condition.salience / 200) * angle) * extremeRadius + lineYOffset + 16)
                 .text('Impact: ' + impact + '%')
                 .style('font-size', '10px')
                 .style('text-anchor', Math.sin((iterator + condition.salience / 200) * angle) < 0 ? 'end' : 'start');
@@ -221,7 +227,7 @@ function showSalience(node) {
                 .attr('x', boundingBox.x - padding)
                 .attr('y', boundingBox.y - padding)
                 .attr('width', boundingBox.width + padding * 2)
-                .attr('height', boundingBox.height * 3.5 + padding * 2);
+                .attr('height', boundingBox.height * 3.5 + padding * 2 + lineYOffset - 16);
 
             iterator += condition.salience / 100;
         }
@@ -270,4 +276,33 @@ function getConditionText(condition) {
         return condition.subject ? condition.subject + ' ' + condition.relationship + ' ' + getReadableSROText(condition.object, null, condition.objectType)
             : condition.expression.text;
     }
+}
+
+function getMultilineConditionText(condition) {
+    let fullstring;
+    if (condition.alt) {
+        fullstring = condition.alt;
+    } else {
+        fullstring = condition.subject ? condition.subject + ' ' + condition.relationship + ' ' + getReadableSROText(condition.object, null, condition.objectType)
+                : condition.expression.text;
+    }
+
+    //todo slice up strings into smaller multiline bits
+
+    var multilineString = [];
+    var multilineIndex = 0;
+
+    var chunks = fullstring.split(' ');
+    multilineString.push(chunks[0]);
+
+    for (var i = 1 ; i < chunks.length; i++) {
+        if (multilineString[multilineIndex].length + chunks[i].length < 50) {
+            multilineString[multilineIndex] += (' ' + chunks[i]);
+        } else {
+            multilineIndex++;
+            multilineString.push(chunks[i]);
+        }
+    }
+
+    return multilineString;
 }

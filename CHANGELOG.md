@@ -12,6 +12,7 @@ facing release notes.
 
 ## v2.26.0
 
+  * [Fix] RB-3502: Change long text to word wrap
   * [Fix] RB-3501: Fix salience view arcs sometimes rendering incorrectly.
 
 ## v2.25.0
