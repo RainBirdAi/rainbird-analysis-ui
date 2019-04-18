@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.32.1
+
+  * [Fix] RB-3821: Add title attribute to evidence map
+
 ## v2.26.0
 
   * [Fix] RB-3502: Change long text to word wrap
