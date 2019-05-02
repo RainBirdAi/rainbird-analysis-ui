@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.33.1
+
+  * [Fix] RB-3821: Indentation and bump version
+
 ## v2.32.1
 
   * [Fix] RB-3821: Add title attribute to evidence map

@@ -223,9 +223,9 @@ function addNode(node, depth, parent, collapse) {
                 .attr('y', '15')
                 .classed('factText', true)
                 .text(getReadableSROText(node.fact.subject.value, node.fact.subject.type, node.fact.subject.dataType));
-          subjectHolder
-              .append('svg:title')
-              .text(node.fact.subject.value);
+            subjectHolder
+                .append('svg:title')
+                .text(node.fact.subject.value);
 
             var relationshipHolder = rowHolder
                 .append('g')
@@ -258,9 +258,9 @@ function addNode(node, depth, parent, collapse) {
                 .attr('text-rendering','geometricPrecision')
                 .attr('y', '15')
                 .text(getReadableSROText(node.fact.object.value, node.fact.object.type, node.fact.object.dataType));
-          objectHolder
-              .append('title')
-              .text(node.fact.object.value);
+            objectHolder
+                .append('title')
+                .text(node.fact.object.value);
         }
 
         if (node.rule) {
