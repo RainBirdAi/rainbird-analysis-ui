@@ -1,6 +1,6 @@
 var yolandaUrl;
 var sid;
-var params = window.location.search.substr(1).split("&");
+var params = window.location.search.substr(1).split('&');
 
 if (params.length === 3) {
     yolandaUrl = params[2].split('api=')[1];
@@ -556,7 +556,7 @@ function getRBLangRuleText(condition) {
 function getFact(factId, sid, callback) {
     $.ajax({
         type: 'GET',
-        url: yolandaUrl + "/analysis/evidence/" + factId + "/" + sid,
+        url: yolandaUrl + '/analysis/evidence/' + factId + '/' + sid,
         success: function (data, status) {
             console.log('evidence', data);
             callback(data);
