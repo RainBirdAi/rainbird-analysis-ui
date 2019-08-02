@@ -1,4 +1,15 @@
-var yolandaUrl = window.location.href.split('?api=')[1];
+var yolandaUrl;
+var sid;
+var params = window.location.search.substr(1).split("&");
+
+if (params.length === 3) {
+    yolandaUrl = params[2].split('api=')[1];
+    sid = params[1].split('sid=')[1];
+} else {
+    // Support old style evidence URLs
+    yolandaUrl = window.location.href.split('?api=')[1];
+}
+
 var columns = [];
 var storage = localStorage;
 var minimumPixelChangePanThreshold = 5;
@@ -61,9 +72,17 @@ function start() {
         .datum({x:-400, y:-350})
         .call(pan);
 
-    var firstFactID = window.location.href.split('?id=')[1];
 
-    getFact(firstFactID, function(fact) {
+    var firstFactID;
+
+    if (params.length === 3) {
+        firstFactID = params[0].split('id=')[1];
+    } else {
+        // Support old style evidence URLs
+        firstFactID = window.location.href.split('?id=')[1];
+    }
+
+    getFact(firstFactID, sid, function(fact) {
         addNode(fact, 0);
     });
 }
@@ -430,7 +449,7 @@ function addRuleBlock(node, nodeHolder, depth) {
             };
             rowHolder.on('mousedown', function() {
                 if(!~condition.factID.indexOf('WA:XX')) {
-                    getFact(condition.factID, function (fact) {
+                    getFact(condition.factID, sid, function (fact) {
                         if (!expanded) {
                             expanded = true;
                             fact.targetIndex = i;
@@ -534,10 +553,10 @@ function getRBLangRuleText(condition) {
 
 
 
-function getFact(factID, callback) {
+function getFact(factId, sid, callback) {
     $.ajax({
         type: 'GET',
-        url: yolandaUrl + "/analysis/evidence/" + factID,
+        url: yolandaUrl + "/analysis/evidence/" + factId + "/" + sid,
         success: function (data, status) {
             console.log('evidence', data);
             callback(data);
